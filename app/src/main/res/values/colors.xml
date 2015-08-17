@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="list_item_title">#fff</color>
+    <color name="list_divider">#272727</color>
+    <color name="list_background">#ffffffff</color>
+    <color name="counter_text_bg">#626262</color>
+    <color name="counter_text_color">#c5c4c4</color>
+    <color name="red">#ffe04b3f</color>
+    <color name="red_shadow">#ffce281e</color>
+    <color name="sky_light">#ff6ac0fa</color>
+    <color name="sky">#ff24a9e3</color>
+    <color name="blue">#ff3377db</color>
+    <color name="blue_shadow">#ff25569e</color>
+    <color name="yellow">#fffde338</color>
+    <color name="yellow_shadow">#ffefc926</color>
+    <color name="green">#ff5eb242</color>
+    <color name="green_shadow">#ff5b9640</color>
+    <color name="orange">#ffffa44d</color>
+    <color name="red_orange">#fff1693c</color>
+    <color name="light_teal">#ff4dbcb6</color>
+    <color name="teal">#ff0e91a1</color>
+    <color name="light_gray_1">#fff3f3f3</color>
+    <color name="light_gray_2">#ffdcdcdc</color>
+    <color name="light_gray_3">#ffa2a4a7</color>
+    <color name="dark_gray">#ff333333</color>
+    <color name="text_color_white">#ffffffff</color>
+    <color name="text_color_primary">#ff333333</color>
+    <color name="text_color_secondary">#ff666666</color>
+    <color name="text_color_hint">#ffa2a4a7</color>
+    <color name="action_button_drop_shadow">#ffc94727</color>
+    <color name="action_button_disabled">#fff79d82</color>
+    <color name="golden">#fff9b717</color>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item>Order</item>
+        <item>Menu</item>
+        <item>History</item>
+        <item>Settings</item>
+    </string-array>
+
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@mipmap/menu_home_icon</item>
+        <item>@mipmap/menu_menu_icon</item>
+        <item>@mipmap/menu_history_icon</item>
+        <item>@mipmap/menu_settings_icon</item>
+    </array>
+    <array name="nav_drawer_icons_selected">
+        <item>@mipmap/menu_home_icon_selected</item>
+        <item>@mipmap/menu_menu_icon_selected</item>
+        <item>@mipmap/menu_history_icon_selected</item>
+        <item>@mipmap/menu_settings_icon_selected</item>
+    </array>
+
+</resources>
