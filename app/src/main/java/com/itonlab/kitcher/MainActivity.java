@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.itonlab.kitcher.adapter.NavDrawerListAdapter;
 import com.itonlab.kitcher.model.NavDrawerItem;
-import com.itonlab.kitcher.ui.HomeFragment;
+import com.itonlab.kitcher.ui.MenuFragment;
+import com.itonlab.kitcher.ui.OrderFragment;
+import com.itonlab.kitcher.ui.SettingsFragment;
 import com.itonlab.kitcher.util.FileManager;
 
 import java.util.ArrayList;
@@ -46,9 +48,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         FileManager fileManager = new FileManager(MainActivity.this);
-        if(!fileManager.isExistInInternal(FileManager.DATABASE_SUBDIR, "rester.db")){
-            //copy rester.db to database folder
-            fileManager.copyAssetsFileToInternal("rester.db", FileManager.DATABASE_SUBDIR);
+        if(!fileManager.isExistInInternal(FileManager.DATABASE_SUBDIR, "kitcher.db")){
+            //copy kitcher.db to database folder
+            fileManager.copyAssetsFileToInternal("kitcher.db", FileManager.DATABASE_SUBDIR);
         }
 
 
@@ -162,16 +164,16 @@ public class MainActivity extends Activity {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new HomeFragment();
+                fragment = new OrderFragment();
                 break;
             case 1:
-                fragment = new HomeFragment();
+                fragment = new MenuFragment();
                 break;
             case 2:
-                fragment = new HomeFragment();
+                fragment = new OrderFragment();
                 break;
             case 3:
-                fragment = new HomeFragment();
+                fragment = new SettingsFragment();
                 break;
             default:
                 break;
@@ -246,5 +248,15 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }
