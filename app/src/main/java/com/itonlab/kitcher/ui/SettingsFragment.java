@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
+import com.itonlab.kitcher.util.AppPreference;
 
 import java.util.ArrayList;
 
@@ -23,9 +24,8 @@ public class SettingsFragment extends Fragment{
     public final int TCP_PORT = 21111;
     private SimpleTCPServer server;
 
-    private TextView textViewIP, textViewStatus;
-    private EditText editTextMessage, editTextIP;
-    private Button buttonSend;
+    private TextView textViewIP;
+    private EditText editTextName;
     private ListView listViewChat;
 
     private ArrayList<String> data;
@@ -49,38 +49,10 @@ public class SettingsFragment extends Fragment{
             }
         });
 
-        textViewStatus = (TextView) rootView.findViewById(R.id.textViewStatus);
-
         textViewIP = (TextView) rootView.findViewById(R.id.textViewIP);
         textViewIP.setText(TCPUtils.getIP(getActivity()));
 
-        editTextMessage = (EditText) rootView.findViewById(R.id.editTextMessage);
-
-        editTextIP = (EditText) rootView.findViewById(R.id.editTextIP);
-        TCPUtils.forceInputIP(editTextIP);
-
-        buttonSend = (Button) rootView.findViewById(R.id.buttonSend);
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (editTextMessage.getText().length() > 0) {
-                    String message = editTextMessage.getText().toString();
-                    String ip = editTextIP.getText().toString();
-
-                    SimpleTCPClient.send(message, ip, TCP_PORT, new SimpleTCPClient.SendCallback() {
-                        public void onSuccess(String tag) {
-                            textViewStatus.setText("Status : Sent");
-                        }
-
-                        public void onFailed(String tag) {
-                            textViewStatus.setText("Status : Failed");
-                        }
-                    }, "TAG");
-
-                    editTextMessage.setText("");
-                    textViewStatus.setText("Status : Sending...");
-                }
-            }
-        });
+        editTextName = (EditText) rootView.findViewById(R.id.etYourName);
 
         data = new ArrayList<String>();
         adapter = new ArrayAdapter<String>(getActivity()
@@ -95,12 +67,28 @@ public class SettingsFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+        loadSettingsValue();
         server.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        saveSettingsValue();
         server.stop();
+
+    }
+
+    private void saveSettingsValue(){
+        String yourName = editTextName.getText().toString().trim();
+
+        AppPreference appPreference = new AppPreference(getActivity());
+        appPreference.saveYourName(yourName);
+    }
+
+    private void loadSettingsValue(){
+        AppPreference appPreference = new AppPreference(getActivity());
+        String yourName = appPreference.getYourName();
+        editTextName.setText(yourName);
     }
 }
