@@ -34,4 +34,14 @@ public class AppPreference {
     public String getYourName(){
         return sharedPref.getString("yourName",mContext.getResources().getString(R.string.app_name));
     }
+
+    public void saveAppPassword(String password) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("appPassword", password);
+        editor.apply();
+    }
+
+    public String getAppPassword() {
+        return sharedPref.getString("appPassword", "1234");
+    }
 }

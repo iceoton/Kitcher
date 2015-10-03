@@ -10,6 +10,8 @@ import android.util.Log;
 import com.itonlab.kitcher.model.FoodItem;
 import com.itonlab.kitcher.model.FoodOrder;
 import com.itonlab.kitcher.model.FoodOrderItem;
+import com.itonlab.kitcher.model.MenuTable;
+import com.itonlab.kitcher.model.OrderDetailItem;
 import com.itonlab.kitcher.model.OrderItemTable;
 import com.itonlab.kitcher.model.OrderTable;
 
@@ -55,7 +57,34 @@ public class KitcherDao {
         return  foodItems;
     }
 
-    public void addOrder(FoodOrder foodOrder){
+    public FoodItem getMenuAtId(int menuId){
+        FoodItem foodItem = null;
+        String sql = "SELECT * FROM menu WHERE id = ?";
+        String[] selectionArgs = {String.valueOf(menuId)};
+        Cursor cursor = database.rawQuery(sql, selectionArgs);
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            foodItem = FoodItem.newInstance(cursor);
+        }
+
+        return foodItem;
+    }
+
+    public void updateMenu(FoodItem foodItem){
+        ContentValues values = new ContentValues();
+        values.put(MenuTable.Columns._NAME_THAI, foodItem.getNameThai());
+        values.put(MenuTable.Columns._PRICE, foodItem.getPrice());
+        String[] whereArgs = {String.valueOf(foodItem.getId())};
+
+        int affected = database.update(MenuTable.TABLE_NAME, values, "id=?", whereArgs);
+        if(affected == 0){
+            Log.d(TAG,"[Menu]update menu id " + foodItem.getId() + " not successful.");
+        }
+
+    }
+
+    public int addOrder(FoodOrder foodOrder){
         ContentValues values = foodOrder.toContentValues();
         long insertIndex = database.insert(OrderTable.TABLE_NAME, null, values);
         if (insertIndex == -1) {
@@ -63,6 +92,8 @@ public class KitcherDao {
         } else {
             Log.d(TAG, "insert order successful.");
         }
+
+        return (int)insertIndex;
     }
 
     public void addOrderItem(FoodOrderItem foodOrderItem){
@@ -77,7 +108,7 @@ public class KitcherDao {
 
     public ArrayList<FoodOrder> getAllOrder(){
         ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
-        String sql = "SELECT * FROM order";
+        String sql = "SELECT * FROM 'order'";
         Cursor cursor = database.rawQuery(sql,null);
 
         if(cursor.getCount() > 0){
@@ -94,6 +125,55 @@ public class KitcherDao {
         Log.d(TAG, "Number of order: " + foodOrders.size());
 
         return foodOrders;
+    }
+
+    public ArrayList<FoodOrder> getAllOrderNotServed(){
+        ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
+        String sql = "SELECT * FROM 'order' WHERE served=0 ORDER BY order_time DESC";
+        Cursor cursor = database.rawQuery(sql,null);
+
+        if(cursor.getCount() > 0){
+            FoodOrder foodOrder = null;
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()){
+                foodOrder = foodOrder.newInstance(cursor);
+                foodOrders.add(foodOrder);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        Log.d(TAG, "Number of order: " + foodOrders.size());
+
+        return  foodOrders;
+    }
+
+    public ArrayList<OrderDetailItem> getOrderDetail(int orderId){
+        ArrayList<OrderDetailItem> orderDetailItems = new ArrayList<OrderDetailItem>();
+        String sql = "SELECT menu_id, name_th, price, amount" +
+                " FROM order_item INNER JOIN menu ON menu_id = menu.id"
+                +" WHERE order_id = ?";
+        String[] whereArgs = {String.valueOf(orderId)};
+        Cursor cursor = database.rawQuery(sql,whereArgs);
+
+        if(cursor.getCount() > 0){
+            OrderDetailItem orderDetailItem = null;
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()){
+                orderDetailItem = new OrderDetailItem();
+                orderDetailItem.setMenuId(cursor.getInt(0));
+                orderDetailItem.setName(cursor.getString(1));
+                orderDetailItem.setPrice(cursor.getDouble(2));
+                orderDetailItem.setAmount(cursor.getInt(3));
+                orderDetailItems.add(orderDetailItem);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        Log.d(TAG, "Number of item in order: " + orderDetailItems.size());
+
+        return orderDetailItems;
     }
 
 }

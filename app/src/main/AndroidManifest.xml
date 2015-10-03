@@ -20,6 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.OrderDetailActivity" />
+        <activity
+            android:name=".ui.ShowDatabaseActivity"
+            android:label="@string/text_edit_database"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".ui.EditDatabaseActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

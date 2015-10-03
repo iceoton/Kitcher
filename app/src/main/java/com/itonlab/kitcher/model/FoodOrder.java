@@ -3,15 +3,20 @@ package com.itonlab.kitcher.model;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class FoodOrder {
     private int id;
     private String code;
     private String customerName;
     private String customerIP;
-    private int amount;
+    private int total;
     private Date orderTime;
+    private boolean served = false;
 
     public static FoodOrder newInstance(Cursor cursor){
         FoodOrder foodOrder = new FoodOrder();
@@ -25,15 +30,35 @@ public class FoodOrder {
         this.code = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CODE));
         this.customerName = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CUSTOMER_NAME));
         this.customerIP = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CUSTOMER_IP));
-        this.amount = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._AMOUNT));
+        this.total = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL));
+        String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._ORDER_TIME));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        try {
+            this.orderTime = dateFormat.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int servedValue = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._SERVED));
+        // 1 is served and 0 don't serve.
+        if(servedValue == 0){
+            this.served = false;
+        } else {
+            this.served = true;
+        }
+
     }
 
     public ContentValues toContentValues(){
         ContentValues values = new ContentValues();
         values.put(OrderTable.Columns._CUSTOMER_NAME, this.customerName);
         values.put(OrderTable.Columns._CUSTOMER_IP,this.customerIP);
-        values.put(OrderTable.Columns._AMOUNT, this.amount);
-        values.put(OrderTable.Columns._ORDER_TIME, this.orderTime.toString());
+        values.put(OrderTable.Columns._TOTAL, this.total);
+        int servedValue = 0;
+        if(served){
+            servedValue = 1;
+        }
+        values.put(OrderTable.Columns._SERVED, servedValue);
 
         return values;
     }
@@ -70,12 +95,12 @@ public class FoodOrder {
         this.customerIP = customerIP;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getTotal() {
+        return total;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public Date getOrderTime() {
@@ -84,5 +109,13 @@ public class FoodOrder {
 
     public void setOrderTime(Date orderTime) {
         this.orderTime = orderTime;
+    }
+
+    public boolean isServed() {
+        return served;
+    }
+
+    public void setServed(boolean served) {
+        this.served = served;
     }
 }

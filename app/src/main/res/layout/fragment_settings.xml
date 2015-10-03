@@ -6,10 +6,9 @@
 
     <LinearLayout
         android:id="@+id/layoutYourName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_fragment_row_height"
+        android:layout_margin="@dimen/normal_layout_margin"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -32,12 +31,17 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dash_line"
+        android:layerType="software" />
+
     <LinearLayout
-        android:id="@+id/layoutTargetIP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:id="@+id/layoutMasterIP"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_fragment_row_height"
+        android:layout_margin="@dimen/normal_layout_margin"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -58,13 +62,40 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listViewChat"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="5dp"
-        android:layout_weight="1">
+        android:layout_height="1dp"
+        android:background="@drawable/dash_line"
+        android:layerType="software" />
 
-    </ListView>
+    <LinearLayout
+        android:id="@+id/layoutEditDatabase"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_fragment_row_height"
+        android:layout_margin="@dimen/normal_layout_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:padding="8dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_edit_database"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_edit_database"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dash_line"
+        android:layerType="software" />
+
+
 
 </LinearLayout>

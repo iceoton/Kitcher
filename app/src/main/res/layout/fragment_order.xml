@@ -7,6 +7,8 @@
     android:orientation="vertical"
     android:padding="8dp">
 
+    <include layout="@layout/order_list_item" />
+
     <ListView
         android:id="@+id/listViewOrder"
         android:layout_width="match_parent"

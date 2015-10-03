@@ -7,7 +7,7 @@ public class FoodOrderItem {
     private int orderID;
     private int menuID;
     private int amount;
-    private boolean served;
+    private boolean served = false;
 
     public ContentValues toContentValues(){
         ContentValues values = new ContentValues();
@@ -15,7 +15,7 @@ public class FoodOrderItem {
         values.put(OrderItemTable.Columns._MENU_ID, this.menuID);
         values.put(OrderItemTable.Columns._AMOUNT, this.amount);
         int servedValue = 0;
-        if(served == true){
+        if(served){
             servedValue = 1;
         }
         values.put(OrderItemTable.Columns._SERVED, servedValue);

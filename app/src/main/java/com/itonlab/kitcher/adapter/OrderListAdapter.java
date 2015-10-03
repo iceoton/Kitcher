@@ -10,9 +10,11 @@ import android.widget.TextView;
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.model.FoodOrder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class OrderListAdapter extends BaseAdapter{
+public class OrderListAdapter extends BaseAdapter {
     Context mContext;
     ArrayList<FoodOrder> orderItems;
 
@@ -33,22 +35,29 @@ public class OrderListAdapter extends BaseAdapter{
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return orderItems.get(position).getId();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null){
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.order_list_item, parent, false);
         }
 
         FoodOrder order = orderItems.get(position);
-        TextView tvCustomerName = (TextView)convertView.findViewById(R.id.tvCustomerName);
+        TextView tvCustomerName = (TextView) convertView.findViewById(R.id.tvCustomerName);
         tvCustomerName.setText(order.getCustomerName());
-        TextView tvOrderTime = (TextView)convertView.findViewById(R.id.tvOrderTime);
-        tvOrderTime.setText(order.getOrderTime().toString());
+        TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault());
+        String dateString = dateFormat.format(order.getOrderTime());
+        tvOrderTime.setText(dateString);
+
+        TextView tvNumberOfFood = (TextView)convertView.findViewById(R.id.tvNumberOfFood);
+        tvNumberOfFood.setText(String.valueOf(order.getTotal()));
 
         return convertView;
     }
+
 }

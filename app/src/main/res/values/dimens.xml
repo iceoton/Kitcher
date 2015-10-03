@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="food_item_text_title">20sp</dimen>
     <dimen name="food_item_text_normal">16sp</dimen>
+    <dimen name="normal_layout_margin">8dp</dimen>
+    <dimen name="setting_fragment_row_height">60dp</dimen>
 </resources>
