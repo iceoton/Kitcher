@@ -9,20 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodOrder;
 import com.itonlab.kitcher.util.AppPreference;
 import com.itonlab.kitcher.util.OrderFunction;
-
-import java.util.ArrayList;
 
 import app.akexorcist.simpletcplibrary.SimpleTCPServer;
 import app.akexorcist.simpletcplibrary.TCPUtils;

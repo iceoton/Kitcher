@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.itonlab.kitcher.adapter.NavDrawerListAdapter;
 import com.itonlab.kitcher.model.NavDrawerItem;
+import com.itonlab.kitcher.ui.HistoryFragment;
 import com.itonlab.kitcher.ui.MenuFragment;
 import com.itonlab.kitcher.ui.OrderFragment;
 import com.itonlab.kitcher.ui.SettingsFragment;
@@ -170,7 +171,7 @@ public class MainActivity extends Activity {
                 fragment = new MenuFragment();
                 break;
             case 2:
-                fragment = new OrderFragment();
+                fragment = new HistoryFragment();
                 break;
             case 3:
                 fragment = new SettingsFragment();
