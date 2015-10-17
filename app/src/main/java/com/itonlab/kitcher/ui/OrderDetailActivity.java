@@ -3,6 +3,8 @@ package com.itonlab.kitcher.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -47,6 +49,8 @@ public class OrderDetailActivity extends Activity {
         TextView tvTotalPrice = (TextView) findViewById(R.id.tvTotalPrice);
         tvTotalPrice.setText(String.valueOf(findTotalPrice()));
 
+        Button btnServed = (Button) findViewById(R.id.btnServed);
+        btnServed.setOnClickListener(btnServedOnClickListener);
     }
 
     @Override
@@ -71,5 +75,16 @@ public class OrderDetailActivity extends Activity {
 
         return totalPrice;
     }
+
+    View.OnClickListener btnServedOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Set order in database is served.
+            int orderId = getIntent().getIntExtra("ORDER_ID", 0);
+            databaseDao.setOrderServed(orderId, true);
+            // Close this activity
+            finish();
+        }
+    };
 
 }

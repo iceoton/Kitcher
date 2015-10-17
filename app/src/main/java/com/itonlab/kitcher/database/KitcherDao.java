@@ -99,6 +99,22 @@ public class KitcherDao {
         return (int) insertIndex;
     }
 
+    public void setOrderServed(int orderId, boolean served){
+        ContentValues values = new ContentValues();
+        // 1 is served and 0 don't serve.
+        int servedInteger = 0;
+        if(served){
+            servedInteger = 1;
+        }
+        values.put(OrderTable.Columns._SERVED, servedInteger);
+        String[] whereArgs = {String.valueOf(orderId)};
+
+        int affected = database.update(OrderTable.TABLE_NAME, values, "id=?", whereArgs);
+        if (affected == 0) {
+            Log.d(TAG, "[Order]update served value in order id " + orderId + " not successful.");
+        }
+    }
+
     public void addOrderItem(FoodOrderItem foodOrderItem) {
         ContentValues values = foodOrderItem.toContentValues();
         long insertIndex = database.insert(OrderItemTable.TABLE_NAME, null, values);
@@ -186,7 +202,7 @@ public class KitcherDao {
         String day = dateFormat.format(date);
         Log.d(TAG, "Get " + day + " income");
         String sql = "SELECT SUM(total_price) as total_price FROM 'order' " +
-                "WHERE order_time like '" + day +"%'";
+                "WHERE order_time like '" + day +"%' AND served=1";
         Cursor cursor = database.rawQuery(sql, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();

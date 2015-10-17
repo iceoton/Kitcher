@@ -3,10 +3,28 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Rester</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="ActionBar.Solid.Rester" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">@color/light_gray_3</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:titleTextStyle">@style/text_white_bold</item>
+    </style>
+
+    <style name="text_white_bold" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/text_color_white</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DatabaseRowItem" parent="android:TextAppearance.Holo.Widget.TextView">
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="text_bill_list_item" parent="@android:style/TextAppearance.Holo.Widget.TextView">
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>
