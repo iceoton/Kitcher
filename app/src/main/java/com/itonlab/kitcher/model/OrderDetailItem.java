@@ -1,5 +1,8 @@
 package com.itonlab.kitcher.model;
 
+/**
+ * คลาสสำหรับใช้เป็น model แสดงข้อมูลในหน้า Order Detail (หน้าแสดง order item ที่ลูกค้าสั่ง)
+ */
 public class OrderDetailItem {
     private int menuId;
     private String name;

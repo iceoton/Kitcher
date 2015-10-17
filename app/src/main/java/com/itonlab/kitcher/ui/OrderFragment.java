@@ -72,6 +72,7 @@ public class OrderFragment extends Fragment {
         super.onResume();
         server.start();
         databaseDao.open();
+        // เพราะทุกครั้งที่กลับมาหน้านี้ให้โหลดข้อมูลมาแสดงใหม่ทุกครั้ง
         foodOrders = databaseDao.getAllOrderNotServed();
         orderListAdapter = new OrderListAdapter(getActivity(), foodOrders);
         listViewOrder.setAdapter(orderListAdapter);

@@ -15,6 +15,7 @@ public class FoodOrder {
     private String customerName;
     private String customerIP;
     private int total;
+    private double totalPrice;
     private Date orderTime;
     private boolean served = false;
 
@@ -31,6 +32,7 @@ public class FoodOrder {
         this.customerName = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CUSTOMER_NAME));
         this.customerIP = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CUSTOMER_IP));
         this.total = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL));
+        this.totalPrice = cursor.getDouble(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL_PRICE));
         String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._ORDER_TIME));
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -54,6 +56,7 @@ public class FoodOrder {
         values.put(OrderTable.Columns._CUSTOMER_NAME, this.customerName);
         values.put(OrderTable.Columns._CUSTOMER_IP,this.customerIP);
         values.put(OrderTable.Columns._TOTAL, this.total);
+        values.put(OrderTable.Columns._TOTAL_PRICE, this.totalPrice);
         int servedValue = 0;
         if(served){
             servedValue = 1;
@@ -101,6 +104,14 @@ public class FoodOrder {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public Date getOrderTime() {

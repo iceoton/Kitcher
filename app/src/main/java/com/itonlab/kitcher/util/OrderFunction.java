@@ -44,6 +44,7 @@ public class OrderFunction {
         private String name;
         private String ip;
         private int total;
+        private double totalPrice;
         private ArrayList<ClientOrderItem> clientOrderItems = new ArrayList<ClientOrderItem>();
 
         public String getName() {
@@ -70,6 +71,14 @@ public class OrderFunction {
             this.total = total;
         }
 
+        public double getTotalPrice() {
+            return totalPrice;
+        }
+
+        public void setTotalPrice(double totalPrice) {
+            this.totalPrice = totalPrice;
+        }
+
         public ArrayList<ClientOrderItem> getClientOrderItems() {
             return clientOrderItems;
         }
@@ -86,6 +95,7 @@ public class OrderFunction {
         foodOrder.setCustomerName(clientOrder.getName());
         foodOrder.setCustomerIP(clientOrder.getIp());
         foodOrder.setTotal(clientOrder.getTotal());
+        foodOrder.setTotalPrice(clientOrder.getTotalPrice());
         Date now = new Date();
         foodOrder.setOrderTime(now);
 

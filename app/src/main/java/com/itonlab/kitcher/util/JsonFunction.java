@@ -21,6 +21,7 @@ public class JsonFunction {
             clientOrder.setName(jsonOrder.getString("name"));
             clientOrder.setIp(jsonOrder.getString("ip"));
             clientOrder.setTotal(jsonOrder.getInt("total"));
+            clientOrder.setTotalPrice(jsonOrder.getDouble("total_price"));
             JSONArray jsonArrayOrderItems = jsonOrder.getJSONArray("order");
             for (int i = 0; i < jsonArrayOrderItems.length(); i++) {
                 JSONObject jsonOrderItem = jsonArrayOrderItems.getJSONObject(i);

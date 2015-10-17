@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -22,7 +23,12 @@ import com.itonlab.kitcher.custom.MyYAxisValueFormatter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.util.OrderFunction;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import app.akexorcist.simpletcplibrary.SimpleTCPServer;
 
@@ -31,6 +37,7 @@ public class HistoryFragment extends Fragment {
     private SimpleTCPServer server;
     private KitcherDao databaseDao;
 
+    private TextView tvTodayIncome;
     private BarChart barChartWeek;
 
     @Nullable
@@ -50,6 +57,10 @@ public class HistoryFragment extends Fragment {
         });
 
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+
+        tvTodayIncome = (TextView) rootView.findViewById(R.id.tvTodayIncome);
+        loadTodayIncome();
+
         barChartWeek = (BarChart) rootView.findViewById(R.id.chartWeek);
         barChartWeek.setDescription("");
         barChartWeek.setDrawValueAboveBar(true);
@@ -58,7 +69,31 @@ public class HistoryFragment extends Fragment {
 
         barChartWeek.setDrawBarShadow(false);
         barChartWeek.setDrawGridBackground(false);
+        loadBarChartWeek();
 
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        server.start();
+        databaseDao.open();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        server.stop();
+        databaseDao.close();
+    }
+
+    private void loadTodayIncome() {
+        double todayIncome = databaseDao.getDayIncome(new Date());
+        tvTodayIncome.setText(String.valueOf(todayIncome) + " บาท");
+    }
+
+    private void loadBarChartWeek() {
         XAxis xAxis = barChartWeek.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
@@ -89,41 +124,33 @@ public class HistoryFragment extends Fragment {
         l.setTextSize(11f);
         l.setXEntrySpace(4f);*/
 
-        loadBarChartWeek();
-
-        return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        server.start();
-        databaseDao.open();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        server.stop();
-        databaseDao.close();
-    }
-
-    private void loadBarChartWeek() {
         final int[] WEEK_COLORS = {
-                Color.rgb(227, 200, 0), Color.rgb(244, 114, 208), Color.rgb(96, 169, 23),
-                Color.rgb(250, 104, 0), Color.rgb(27, 161, 226), Color.rgb(170, 0, 155),
-                Color.rgb(229, 20, 0)
+                Color.rgb(229, 20, 0), Color.rgb(227, 200, 0), Color.rgb(244, 114, 208),
+                Color.rgb(96, 169, 23), Color.rgb(250, 104, 0), Color.rgb(27, 161, 226),
+                Color.rgb(170, 0, 155)
         };
+
+        Calendar calendar = new GregorianCalendar();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        Log.d("DEBUG", "Day of week = " + dayOfWeek);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String day = dateFormat.format(calendar.getTime());
+        Log.d("DEBUG", "Day of week = " + day);
 
         ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
         for (int i = 0; i < 7; i++) {
-            yValues.add(new BarEntry((int)(1000000 * Math.random()), i));
+            calendar.set(Calendar.DAY_OF_WEEK, (i + 1));
+            yValues.add(new BarEntry((float) databaseDao.getDayIncome(calendar.getTime()), i));
         }
 
         ArrayList<String> xValues = new ArrayList<String>();
-        for (int i = 0; i < 7; i++) {
-            xValues.add((i + 1) + "จ");
-        }
+        xValues.add("อาทิตย์");
+        xValues.add("จันทร์");
+        xValues.add("อังคาร");
+        xValues.add("พุธ");
+        xValues.add("พฤหัสบดี");
+        xValues.add("ศุกร์");
+        xValues.add("เสาร์");
 
         // ชุดข้อมูลที่จะเอาไปแสดงในแกน y
         BarDataSet barDataSet = new BarDataSet(yValues, "Data Set");
