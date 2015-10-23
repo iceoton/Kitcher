@@ -46,8 +46,8 @@ public class HistoryDetailListAdapter extends BaseAdapter {
         }
 
         FoodOrder order = orderItems.get(position);
-        TextView tvOrderId = (TextView)convertView.findViewById(R.id.tvOrderId);
-        tvOrderId.setText(String.valueOf(order.getId()));
+        TextView tvOrderNumber = (TextView)convertView.findViewById(R.id.tvOrderNumber);
+        tvOrderNumber.setText(String.valueOf(position + 1)); // ที่บวก 1 เพราะมันเริ่มนับจาก 0 สะดวกในการมองของผู้ใช้
         TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault());

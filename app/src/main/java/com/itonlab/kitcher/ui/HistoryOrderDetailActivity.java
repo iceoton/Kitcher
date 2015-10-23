@@ -34,7 +34,7 @@ public class HistoryOrderDetailActivity extends Activity {
         orderId = getIntent().getIntExtra(OrderTable.Columns._ID, 0);
         orderTime = getIntent().getStringExtra(OrderTable.Columns._ORDER_TIME);
 
-        tvOrderId = (TextView) findViewById(R.id.tvOrderId);
+        tvOrderId = (TextView) findViewById(R.id.tvOrderNumber);
         tvOrderId.setText(String.valueOf(orderId));
         tvOrderTime = (TextView) findViewById(R.id.tvOrderTime);
         tvOrderTime.setText(orderTime);
