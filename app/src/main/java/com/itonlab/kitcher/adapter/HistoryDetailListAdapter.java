@@ -14,15 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class OrderListAdapter extends BaseAdapter {
+public class HistoryDetailListAdapter extends BaseAdapter {
     Context mContext;
     ArrayList<FoodOrder> orderItems;
-    int layoutId;
 
-    public OrderListAdapter(Context mContext, ArrayList<FoodOrder> orderItems, int layoutId) {
+    public HistoryDetailListAdapter(Context mContext, ArrayList<FoodOrder> orderItems) {
         this.mContext = mContext;
         this.orderItems = orderItems;
-        this.layoutId = layoutId;
     }
 
     @Override
@@ -44,12 +42,12 @@ public class OrderListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            convertView = inflater.inflate(layoutId, parent, false);
+            convertView = inflater.inflate(R.layout.history_detail_item, parent, false);
         }
 
         FoodOrder order = orderItems.get(position);
-        TextView tvCustomerName = (TextView) convertView.findViewById(R.id.tvCustomerName);
-        tvCustomerName.setText(order.getCustomerName());
+        TextView tvOrderId = (TextView)convertView.findViewById(R.id.tvOrderId);
+        tvOrderId.setText(String.valueOf(order.getId()));
         TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault());

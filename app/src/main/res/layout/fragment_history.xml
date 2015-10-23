@@ -40,7 +40,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingTop="10dp">
 
@@ -59,6 +60,15 @@
 
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_green"
+        android:text="ดูแบบละเอียด"
+        android:textColor="@color/text_color_white"
+        android:textSize="22sp" />
 
 
 </LinearLayout>

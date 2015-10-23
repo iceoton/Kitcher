@@ -1,6 +1,7 @@
 package com.itonlab.kitcher.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -39,6 +41,7 @@ public class HistoryFragment extends Fragment {
 
     private TextView tvTodayIncome;
     private BarChart barChartWeek;
+    private Button btnDetail;
 
     @Nullable
     @Override
@@ -70,6 +73,9 @@ public class HistoryFragment extends Fragment {
         barChartWeek.setDrawBarShadow(false);
         barChartWeek.setDrawGridBackground(false);
         loadBarChartWeek();
+
+        btnDetail = (Button) rootView.findViewById(R.id.btnDetail);
+        btnDetail.setOnClickListener(btnDetailListener);
 
         return rootView;
     }
@@ -166,4 +172,15 @@ public class HistoryFragment extends Fragment {
         barChartWeek.setData(data);
         barChartWeek.invalidate();
     }
+
+    View.OnClickListener btnDetailListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Fragment fragment = new HistoryDetailFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_container, fragment).commit();
+
+        }
+    };
 }

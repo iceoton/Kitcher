@@ -14,6 +14,12 @@
         <item name="android:titleTextStyle">@style/text_white_bold</item>
     </style>
 
+    <!-- Theme no Action Bar -->
+    <style name="NoActionBar" parent="android:Theme.Holo.Light.NoActionBar.Fullscreen">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="text_white_bold" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_color_white</item>
         <item name="android:textStyle">bold</item>

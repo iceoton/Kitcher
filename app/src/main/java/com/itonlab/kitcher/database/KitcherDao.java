@@ -146,6 +146,27 @@ public class KitcherDao {
         return foodOrders;
     }
 
+    public ArrayList<FoodOrder> getAllOrderServed() {
+        ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
+        String sql = "SELECT * FROM 'order' WHERE served=1 ORDER BY order_time DESC";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        if (cursor.getCount() > 0) {
+            FoodOrder foodOrder = null;
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                foodOrder = foodOrder.newInstance(cursor);
+                foodOrders.add(foodOrder);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        Log.d(TAG, "Number of order: " + foodOrders.size());
+
+        return foodOrders;
+    }
+
     public ArrayList<FoodOrder> getAllOrderNotServed() {
         ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
         String sql = "SELECT * FROM 'order' WHERE served=0 ORDER BY order_time DESC";

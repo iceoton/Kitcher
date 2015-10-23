@@ -31,6 +31,10 @@
         <activity android:name=".ui.EditDatabaseActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".ui.HistoryOrderDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBar"/>
+
     </application>
 
 </manifest>
