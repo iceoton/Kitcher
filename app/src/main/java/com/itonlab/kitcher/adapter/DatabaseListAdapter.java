@@ -8,32 +8,32 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
-import com.itonlab.kitcher.model.FoodItem;
+import com.itonlab.kitcher.model.MenuItem;
 
 import java.util.ArrayList;
 
 public class DatabaseListAdapter extends BaseAdapter{
     Context mContext;
-    ArrayList<FoodItem> foodItems;
+    ArrayList<MenuItem> menuItems;
 
-    public DatabaseListAdapter(Context mContext, ArrayList<FoodItem> foodItems) {
+    public DatabaseListAdapter(Context mContext, ArrayList<MenuItem> menuItems) {
         this.mContext = mContext;
-        this.foodItems = foodItems;
+        this.menuItems = menuItems;
     }
 
     @Override
     public int getCount() {
-        return foodItems.size();
+        return menuItems.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return foodItems.get(position);
+        return menuItems.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return foodItems.get(position).getId();
+        return menuItems.get(position).getId();
     }
 
     @Override
@@ -43,13 +43,13 @@ public class DatabaseListAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.database_list_item,parent, false);
         }
 
-        FoodItem foodItem = foodItems.get(position);
+        MenuItem menuItem = menuItems.get(position);
         TextView tvId = (TextView) convertView.findViewById(R.id.tvId);
-        tvId.setText(String.valueOf(foodItem.getId()));
+        tvId.setText(String.valueOf(menuItem.getId()));
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
-        tvName.setText(foodItem.getNameThai());
+        tvName.setText(menuItem.getNameThai());
         TextView tvPrice  = (TextView) convertView.findViewById(R.id.tvPrice);
-        tvPrice.setText(String.valueOf(foodItem.getPrice()));
+        tvPrice.setText(String.valueOf(menuItem.getPrice()));
 
         return convertView;
     }

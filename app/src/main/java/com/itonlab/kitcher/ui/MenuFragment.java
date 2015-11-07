@@ -11,7 +11,7 @@ import android.widget.ListView;
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.FoodListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodItem;
+import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.util.OrderFunction;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class MenuFragment extends Fragment {
     private SimpleTCPServer server;
     private KitcherDao databaseDao;
     ListView lvFood;
-    ArrayList<FoodItem> foodItems;
+    ArrayList<MenuItem> menuItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,8 +42,8 @@ public class MenuFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_menu,container, false);
         lvFood = (ListView)rootView.findViewById(R.id.listFood);
 
-        foodItems = databaseDao.getMenu();
-        FoodListAdapter foodListAdapter = new FoodListAdapter(getActivity(),foodItems);
+        menuItems = databaseDao.getMenu();
+        FoodListAdapter foodListAdapter = new FoodListAdapter(getActivity(), menuItems);
         lvFood.setAdapter(foodListAdapter);
 
         return rootView;

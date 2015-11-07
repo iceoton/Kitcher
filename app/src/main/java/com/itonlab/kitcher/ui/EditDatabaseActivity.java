@@ -10,14 +10,14 @@ import android.widget.EditText;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodItem;
+import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.MenuTable;
 
 
 public class EditDatabaseActivity  extends Activity{
     private int menuId;
     private KitcherDao databaseDao;
-    private FoodItem foodItem;
+    private MenuItem menuItem;
     private EditText etName, etPrice;
     private Button btnSave;
 
@@ -32,11 +32,11 @@ public class EditDatabaseActivity  extends Activity{
         menuId = getIntent().getIntExtra(MenuTable.Columns._ID,0);
         Log.d("DATABASE", "menu_id = " + menuId);
 
-        foodItem = databaseDao.getMenuAtId(menuId);
+        menuItem = databaseDao.getMenuAtId(menuId);
         etName = (EditText) findViewById(R.id.etName);
-        etName.setText(foodItem.getNameThai());
+        etName.setText(menuItem.getNameThai());
         etPrice = (EditText) findViewById(R.id.etPrice);
-        etPrice.setText(String.valueOf(foodItem.getPrice()));
+        etPrice.setText(String.valueOf(menuItem.getPrice()));
 
         btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +63,8 @@ public class EditDatabaseActivity  extends Activity{
     private void saveToDatabase(){
         String menuName = etName.getText().toString().trim();
         double price = Double.parseDouble(etPrice.getText().toString().trim());
-        foodItem.setNameThai(menuName);
-        foodItem.setPrice(price);
-        databaseDao.updateMenu(foodItem);
+        menuItem.setNameThai(menuName);
+        menuItem.setPrice(price);
+        databaseDao.updateMenu(menuItem);
     }
 }

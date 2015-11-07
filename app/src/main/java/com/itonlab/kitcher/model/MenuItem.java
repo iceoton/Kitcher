@@ -5,7 +5,7 @@ import android.database.Cursor;
 /**
  * This class is item show in food menu.
  */
-public class FoodItem {
+public class MenuItem {
     private int id;
     private String code;
     private String nameThai;
@@ -13,11 +13,11 @@ public class FoodItem {
     private double price;
     private String imgPath;
 
-    public static FoodItem newInstance(Cursor cursor){
-        FoodItem foodItem = new FoodItem();
-        foodItem.fromCursor(cursor);
+    public static MenuItem newInstance(Cursor cursor) {
+        MenuItem menuItem = new MenuItem();
+        menuItem.fromCursor(cursor);
 
-        return  foodItem;
+        return menuItem;
     }
 
     public void fromCursor(Cursor cursor){

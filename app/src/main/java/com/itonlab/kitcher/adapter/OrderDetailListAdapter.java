@@ -43,16 +43,18 @@ public class OrderDetailListAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.bill_list_item, parent, false);
         }
 
-        OrderDetailItem summaryItem = orderDetailItems.get(position);
+        OrderDetailItem orderDetailItem = orderDetailItems.get(position);
         TextView tvName = (TextView)convertView.findViewById(R.id.tvName);
-        tvName.setText(summaryItem.getName());
+        tvName.setText(orderDetailItem.getName());
         TextView tvNumber = (TextView)convertView.findViewById(R.id.tvNumber);
-        tvNumber.setText(summaryItem.getAmount()+ "x");
+        tvNumber.setText(orderDetailItem.getAmount() + "x");
         TextView tvPrice = (TextView)convertView.findViewById(R.id.tvPrice);
-        tvPrice.setText(Double.toString(summaryItem.getPrice()));
+        tvPrice.setText(Double.toString(orderDetailItem.getPrice()));
         TextView tvTotalPrice = (TextView)convertView.findViewById(R.id.tvTotalPrice);
-        double totalPrice = summaryItem.getPrice() * summaryItem.getAmount();
+        double totalPrice = orderDetailItem.getPrice() * orderDetailItem.getAmount();
         tvTotalPrice.setText(Double.toString(totalPrice));
+        TextView tvOption = (TextView) convertView.findViewById(R.id.textViewOption);
+        tvOption.setText(orderDetailItem.getOption());
 
         return convertView;
     }

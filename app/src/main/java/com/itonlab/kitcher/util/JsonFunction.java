@@ -28,6 +28,7 @@ public class JsonFunction {
                 OrderFunction.ClientOrderItem clientOrderItem = new OrderFunction.ClientOrderItem();
                 clientOrderItem.setId(jsonOrderItem.getInt("id"));
                 clientOrderItem.setAmount(jsonOrderItem.getInt("amount"));
+                clientOrderItem.setOption(jsonOrderItem.getString("option"));
                 clientOrder.addOrderItems(clientOrderItem);
             }
 

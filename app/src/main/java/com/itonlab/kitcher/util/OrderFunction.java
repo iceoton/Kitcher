@@ -3,14 +3,11 @@ package com.itonlab.kitcher.util;
 import android.content.Context;
 
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodOrder;
-import com.itonlab.kitcher.model.FoodOrderItem;
+import com.itonlab.kitcher.model.Order;
+import com.itonlab.kitcher.model.OrderItem;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class OrderFunction {
     private Context mContext;
@@ -22,6 +19,7 @@ public class OrderFunction {
     public static class ClientOrderItem {
         private int id;
         private int amount;
+        private String option;
 
         public int getId() {
             return id;
@@ -37,6 +35,14 @@ public class OrderFunction {
 
         public void setAmount(int amount) {
             this.amount = amount;
+        }
+
+        public String getOption() {
+            return option;
+        }
+
+        public void setOption(String option) {
+            this.option = option;
         }
     }
 
@@ -88,32 +94,33 @@ public class OrderFunction {
         }
     }
 
-    public FoodOrder acceptJSONOrder(String json) {
+    public Order acceptJSONOrder(String json) {
         JsonFunction jsonFunction = new JsonFunction(mContext);
         ClientOrder clientOrder = jsonFunction.getOrderFromJSON(json);
-        FoodOrder foodOrder = new FoodOrder();
-        foodOrder.setCustomerName(clientOrder.getName());
-        foodOrder.setCustomerIP(clientOrder.getIp());
-        foodOrder.setTotal(clientOrder.getTotal());
-        foodOrder.setTotalPrice(clientOrder.getTotalPrice());
+        Order order = new Order();
+        order.setCustomerName(clientOrder.getName());
+        order.setCustomerIP(clientOrder.getIp());
+        order.setTotal(clientOrder.getTotal());
+        order.setTotalPrice(clientOrder.getTotalPrice());
         Date now = new Date();
-        foodOrder.setOrderTime(now);
+        order.setOrderTime(now);
 
         KitcherDao database = new KitcherDao(mContext);
         database.open();
-        int orderId = database.addOrder(foodOrder);
-        foodOrder.setId(orderId);
+        int orderId = database.addOrder(order);
+        order.setId(orderId);
         // add all order item after add order is complete.
         for (ClientOrderItem clientOrderItem : clientOrder.getClientOrderItems()) {
-            FoodOrderItem foodOrderItem = new FoodOrderItem();
-            foodOrderItem.setOrderID(orderId);
-            foodOrderItem.setMenuID(clientOrderItem.getId());
-            foodOrderItem.setAmount(clientOrderItem.getAmount());
-            database.addOrderItem(foodOrderItem);
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrderID(orderId);
+            orderItem.setMenuID(clientOrderItem.getId());
+            orderItem.setAmount(clientOrderItem.getAmount());
+            orderItem.setOption(clientOrderItem.getOption());
+            database.addOrderItem(orderItem);
         }
         database.close();
 
-        return foodOrder;
+        return order;
     }
 
 }

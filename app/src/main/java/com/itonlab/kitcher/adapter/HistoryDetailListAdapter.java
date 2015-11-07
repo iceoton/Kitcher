@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
-import com.itonlab.kitcher.model.FoodOrder;
+import com.itonlab.kitcher.model.Order;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ import java.util.Locale;
 
 public class HistoryDetailListAdapter extends BaseAdapter {
     Context mContext;
-    ArrayList<FoodOrder> orderItems;
+    ArrayList<Order> orderItems;
 
-    public HistoryDetailListAdapter(Context mContext, ArrayList<FoodOrder> orderItems) {
+    public HistoryDetailListAdapter(Context mContext, ArrayList<Order> orderItems) {
         this.mContext = mContext;
         this.orderItems = orderItems;
     }
@@ -45,7 +45,7 @@ public class HistoryDetailListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.history_detail_item, parent, false);
         }
 
-        FoodOrder order = orderItems.get(position);
+        Order order = orderItems.get(position);
         TextView tvOrderNumber = (TextView)convertView.findViewById(R.id.tvOrderNumber);
         tvOrderNumber.setText(String.valueOf(position + 1)); // ที่บวก 1 เพราะมันเริ่มนับจาก 0 สะดวกในการมองของผู้ใช้
         TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);

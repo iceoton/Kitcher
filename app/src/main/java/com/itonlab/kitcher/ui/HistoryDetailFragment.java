@@ -14,7 +14,7 @@ import android.widget.ListView;
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.HistoryDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodOrder;
+import com.itonlab.kitcher.model.Order;
 import com.itonlab.kitcher.model.OrderTable;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +23,7 @@ import java.util.Locale;
 
 public class HistoryDetailFragment extends Fragment{
     private KitcherDao databaseDao;
-    private ArrayList<FoodOrder> foodOrders;
+    private ArrayList<Order> orders;
     private ListView listViewOrder;
     private HistoryDetailListAdapter historyDetailListAdapter;
 
@@ -36,9 +36,9 @@ public class HistoryDetailFragment extends Fragment{
         databaseDao = new KitcherDao(getActivity());
         databaseDao.open();
 
-        foodOrders = databaseDao.getAllOrderServed();
+        orders = databaseDao.getAllOrderServed();
         listViewOrder = (ListView) rootView.findViewById(R.id.listViewOrder);
-        historyDetailListAdapter = new HistoryDetailListAdapter(getActivity(), foodOrders);
+        historyDetailListAdapter = new HistoryDetailListAdapter(getActivity(), orders);
         listViewOrder.setAdapter(historyDetailListAdapter);
         listViewOrder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -46,7 +46,7 @@ public class HistoryDetailFragment extends Fragment{
                 // click to see order detail.
                 int orderId = (int) id;
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy/HH:mm:ss", Locale.getDefault());
-                String orderTime = dateFormat.format(foodOrders.get(position).getOrderTime());
+                String orderTime = dateFormat.format(orders.get(position).getOrderTime());
                 Intent intent = new Intent(getActivity(), HistoryOrderDetailActivity.class);
                 intent.putExtra(OrderTable.Columns._ID, orderId);
                 intent.putExtra(OrderTable.Columns._ORDER_TIME, orderTime);

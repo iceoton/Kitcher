@@ -6,10 +6,9 @@ import android.database.Cursor;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
-public class FoodOrder {
+public class Order {
     private int id;
     private String code;
     private String customerName;
@@ -19,11 +18,11 @@ public class FoodOrder {
     private Date orderTime;
     private boolean served = false;
 
-    public static FoodOrder newInstance(Cursor cursor){
-        FoodOrder foodOrder = new FoodOrder();
-        foodOrder.fromCursor(cursor);
+    public static Order newInstance(Cursor cursor) {
+        Order order = new Order();
+        order.fromCursor(cursor);
 
-        return  foodOrder;
+        return order;
     }
 
     public void fromCursor(Cursor cursor){

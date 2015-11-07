@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
-import com.itonlab.kitcher.model.FoodOrder;
+import com.itonlab.kitcher.model.Order;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,10 +16,10 @@ import java.util.Locale;
 
 public class OrderListAdapter extends BaseAdapter {
     Context mContext;
-    ArrayList<FoodOrder> orderItems;
+    ArrayList<Order> orderItems;
     int layoutId;
 
-    public OrderListAdapter(Context mContext, ArrayList<FoodOrder> orderItems, int layoutId) {
+    public OrderListAdapter(Context mContext, ArrayList<Order> orderItems, int layoutId) {
         this.mContext = mContext;
         this.orderItems = orderItems;
         this.layoutId = layoutId;
@@ -47,7 +47,7 @@ public class OrderListAdapter extends BaseAdapter {
             convertView = inflater.inflate(layoutId, parent, false);
         }
 
-        FoodOrder order = orderItems.get(position);
+        Order order = orderItems.get(position);
         TextView tvCustomerName = (TextView) convertView.findViewById(R.id.tvCustomerName);
         tvCustomerName.setText(order.getCustomerName());
         TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);

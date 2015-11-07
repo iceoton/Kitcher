@@ -1,6 +1,5 @@
 package com.itonlab.kitcher.ui;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import android.widget.ListView;
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodOrder;
+import com.itonlab.kitcher.model.Order;
 import com.itonlab.kitcher.util.OrderFunction;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class OrderFragment extends Fragment {
     private SimpleTCPServer server;
     private KitcherDao databaseDao;
     private ListView listViewOrder;
-    private ArrayList<FoodOrder> foodOrders;
+    private ArrayList<Order> orders;
     private OrderListAdapter orderListAdapter;
 
     @Override
@@ -41,9 +40,9 @@ public class OrderFragment extends Fragment {
             public void onDataReceived(String message, String ip) {
                 Log.d("JSON", message);
                 OrderFunction orderFunction = new OrderFunction(getActivity());
-                FoodOrder foodOrder = orderFunction.acceptJSONOrder(message);
+                Order order = orderFunction.acceptJSONOrder(message);
                 // put "new order" to ListView
-                foodOrders.add(0,foodOrder);
+                orders.add(0, order);
                 orderListAdapter.notifyDataSetChanged();
                 listViewOrder.post(new Runnable() {
                     public void run() {
@@ -57,9 +56,9 @@ public class OrderFragment extends Fragment {
         listViewOrder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FoodOrder foodOrder = foodOrders.get(position);
+                Order order = orders.get(position);
                 Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
-                intent.putExtra("ORDER_ID", foodOrder.getId());
+                intent.putExtra("ORDER_ID", order.getId());
                 startActivity(intent);
             }
         });
@@ -73,8 +72,8 @@ public class OrderFragment extends Fragment {
         server.start();
         databaseDao.open();
         // เพราะทุกครั้งที่กลับมาหน้านี้ให้โหลดข้อมูลมาแสดงใหม่ทุกครั้ง
-        foodOrders = databaseDao.getAllOrderNotServed();
-        orderListAdapter = new OrderListAdapter(getActivity(), foodOrders, R.layout.order_list_item);
+        orders = databaseDao.getAllOrderNotServed();
+        orderListAdapter = new OrderListAdapter(getActivity(), orders, R.layout.order_list_item);
         listViewOrder.setAdapter(orderListAdapter);
     }
 

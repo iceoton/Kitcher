@@ -8,6 +8,7 @@ public class OrderDetailItem {
     private String name;
     private double price;
     private int amount;
+    private String option;
 
     public int getMenuId() {
         return menuId;
@@ -39,5 +40,13 @@ public class OrderDetailItem {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
     }
 }

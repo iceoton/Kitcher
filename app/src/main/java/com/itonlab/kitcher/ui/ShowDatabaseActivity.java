@@ -12,7 +12,7 @@ import android.widget.ListView;
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.DatabaseListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.FoodItem;
+import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.MenuTable;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ShowDatabaseActivity extends Activity {
     private KitcherDao databaseDao;
     private ListView lvData;
-    private ArrayList<FoodItem> foodItems;
+    private ArrayList<MenuItem> menuItems;
     DatabaseListAdapter databaseListAdapter;
 
     @Override
@@ -32,7 +32,7 @@ public class ShowDatabaseActivity extends Activity {
         databaseDao.open();
 
         lvData = (ListView) findViewById(R.id.listData);
-        foodItems = databaseDao.getMenu();
+        menuItems = databaseDao.getMenu();
         lvData.setOnItemClickListener(listDataOnItemClick);
     }
 
@@ -40,8 +40,8 @@ public class ShowDatabaseActivity extends Activity {
     protected void onResume() {
         super.onResume();
         databaseDao.open();
-        foodItems = databaseDao.getMenu();
-        databaseListAdapter = new DatabaseListAdapter(ShowDatabaseActivity.this, foodItems);
+        menuItems = databaseDao.getMenu();
+        databaseListAdapter = new DatabaseListAdapter(ShowDatabaseActivity.this, menuItems);
         lvData.setAdapter(databaseListAdapter);
     }
 

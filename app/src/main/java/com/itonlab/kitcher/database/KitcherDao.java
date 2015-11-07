@@ -7,11 +7,11 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.itonlab.kitcher.model.FoodItem;
-import com.itonlab.kitcher.model.FoodOrder;
-import com.itonlab.kitcher.model.FoodOrderItem;
+import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.MenuTable;
+import com.itonlab.kitcher.model.Order;
 import com.itonlab.kitcher.model.OrderDetailItem;
+import com.itonlab.kitcher.model.OrderItem;
 import com.itonlab.kitcher.model.OrderItemTable;
 import com.itonlab.kitcher.model.OrderTable;
 
@@ -39,56 +39,56 @@ public class KitcherDao {
         openHelper.close();
     }
 
-    public ArrayList<FoodItem> getMenu() {
-        ArrayList<FoodItem> foodItems = new ArrayList<FoodItem>();
+    public ArrayList<MenuItem> getMenu() {
+        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
         String sql = "SELECT * FROM menu";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            FoodItem foodItem = null;
+            MenuItem menuItem = null;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                foodItem = FoodItem.newInstance(cursor);
-                foodItems.add(foodItem);
+                menuItem = MenuItem.newInstance(cursor);
+                menuItems.add(menuItem);
                 cursor.moveToNext();
             }
         }
         cursor.close();
 
-        Log.d(TAG, "Number of food in menu: " + foodItems.size());
+        Log.d(TAG, "Number of food in menu: " + menuItems.size());
 
-        return foodItems;
+        return menuItems;
     }
 
-    public FoodItem getMenuAtId(int menuId) {
-        FoodItem foodItem = null;
+    public MenuItem getMenuAtId(int menuId) {
+        MenuItem menuItem = null;
         String sql = "SELECT * FROM menu WHERE id = ?";
         String[] selectionArgs = {String.valueOf(menuId)};
         Cursor cursor = database.rawQuery(sql, selectionArgs);
 
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            foodItem = FoodItem.newInstance(cursor);
+            menuItem = MenuItem.newInstance(cursor);
         }
 
-        return foodItem;
+        return menuItem;
     }
 
-    public void updateMenu(FoodItem foodItem) {
+    public void updateMenu(MenuItem menuItem) {
         ContentValues values = new ContentValues();
-        values.put(MenuTable.Columns._NAME_THAI, foodItem.getNameThai());
-        values.put(MenuTable.Columns._PRICE, foodItem.getPrice());
-        String[] whereArgs = {String.valueOf(foodItem.getId())};
+        values.put(MenuTable.Columns._NAME_THAI, menuItem.getNameThai());
+        values.put(MenuTable.Columns._PRICE, menuItem.getPrice());
+        String[] whereArgs = {String.valueOf(menuItem.getId())};
 
         int affected = database.update(MenuTable.TABLE_NAME, values, "id=?", whereArgs);
         if (affected == 0) {
-            Log.d(TAG, "[Menu]update menu id " + foodItem.getId() + " not successful.");
+            Log.d(TAG, "[Menu]update menu id " + menuItem.getId() + " not successful.");
         }
 
     }
 
-    public int addOrder(FoodOrder foodOrder) {
-        ContentValues values = foodOrder.toContentValues();
+    public int addOrder(Order order) {
+        ContentValues values = order.toContentValues();
         long insertIndex = database.insert(OrderTable.TABLE_NAME, null, values);
         if (insertIndex == -1) {
             Log.d(TAG, "An error occurred on inserting order table.");
@@ -115,8 +115,8 @@ public class KitcherDao {
         }
     }
 
-    public void addOrderItem(FoodOrderItem foodOrderItem) {
-        ContentValues values = foodOrderItem.toContentValues();
+    public void addOrderItem(OrderItem orderItem) {
+        ContentValues values = orderItem.toContentValues();
         long insertIndex = database.insert(OrderItemTable.TABLE_NAME, null, values);
         if (insertIndex == -1) {
             Log.d(TAG, "An error occurred on inserting order_item table.");
@@ -125,72 +125,72 @@ public class KitcherDao {
         }
     }
 
-    public ArrayList<FoodOrder> getAllOrder() {
-        ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
+    public ArrayList<Order> getAllOrder() {
+        ArrayList<Order> orders = new ArrayList<Order>();
         String sql = "SELECT * FROM 'order'";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            FoodOrder foodOrder = null;
+            Order order = null;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                foodOrder = foodOrder.newInstance(cursor);
-                foodOrders.add(foodOrder);
+                order = order.newInstance(cursor);
+                orders.add(order);
                 cursor.moveToNext();
             }
         }
         cursor.close();
 
-        Log.d(TAG, "Number of order: " + foodOrders.size());
+        Log.d(TAG, "Number of order: " + orders.size());
 
-        return foodOrders;
+        return orders;
     }
 
-    public ArrayList<FoodOrder> getAllOrderServed() {
-        ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
+    public ArrayList<Order> getAllOrderServed() {
+        ArrayList<Order> orders = new ArrayList<Order>();
         String sql = "SELECT * FROM 'order' WHERE served=1 ORDER BY order_time DESC";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            FoodOrder foodOrder = null;
+            Order order = null;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                foodOrder = foodOrder.newInstance(cursor);
-                foodOrders.add(foodOrder);
+                order = order.newInstance(cursor);
+                orders.add(order);
                 cursor.moveToNext();
             }
         }
         cursor.close();
 
-        Log.d(TAG, "Number of order: " + foodOrders.size());
+        Log.d(TAG, "Number of order: " + orders.size());
 
-        return foodOrders;
+        return orders;
     }
 
-    public ArrayList<FoodOrder> getAllOrderNotServed() {
-        ArrayList<FoodOrder> foodOrders = new ArrayList<FoodOrder>();
+    public ArrayList<Order> getAllOrderNotServed() {
+        ArrayList<Order> orders = new ArrayList<Order>();
         String sql = "SELECT * FROM 'order' WHERE served=0 ORDER BY order_time DESC";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            FoodOrder foodOrder = null;
+            Order order = null;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                foodOrder = foodOrder.newInstance(cursor);
-                foodOrders.add(foodOrder);
+                order = order.newInstance(cursor);
+                orders.add(order);
                 cursor.moveToNext();
             }
         }
         cursor.close();
 
-        Log.d(TAG, "Number of order: " + foodOrders.size());
+        Log.d(TAG, "Number of order: " + orders.size());
 
-        return foodOrders;
+        return orders;
     }
 
     public ArrayList<OrderDetailItem> getOrderDetail(int orderId) {
         ArrayList<OrderDetailItem> orderDetailItems = new ArrayList<OrderDetailItem>();
-        String sql = "SELECT menu_id, name_th, price, amount" +
+        String sql = "SELECT menu_id, name_th, price, amount, option" +
                 " FROM order_item INNER JOIN menu ON menu_id = menu.id"
                 + " WHERE order_id = ?";
         String[] whereArgs = {String.valueOf(orderId)};
@@ -205,6 +205,7 @@ public class KitcherDao {
                 orderDetailItem.setName(cursor.getString(1));
                 orderDetailItem.setPrice(cursor.getDouble(2));
                 orderDetailItem.setAmount(cursor.getInt(3));
+                orderDetailItem.setOption(cursor.getString(4));
                 orderDetailItems.add(orderDetailItem);
                 cursor.moveToNext();
             }
