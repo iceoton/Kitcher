@@ -46,26 +46,33 @@ public class ShowDatabaseActivity extends Activity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         databaseDao.close();
-        super.onPause();
+        super.onStop();
     }
 
     AdapterView.OnItemClickListener listDataOnItemClick = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final int itemId = (int)id;
+        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+            final int menuId = (int) id;
             AlertDialog.Builder builder = new AlertDialog.Builder(ShowDatabaseActivity.this);
-            builder.setMessage("ต้องการแก้ไขข้อมูลใช่หรือไม่?")
-                    .setPositiveButton("ไม่ใช่", new DialogInterface.OnClickListener() {
+            builder.setMessage("ต้องการลบหรือแก้ไข?")
+                    .setPositiveButton("ลบ", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
+                            // Delete data in the database.
+                            databaseDao.deleteMenu(menuId);
+
+                            // Remove item from ListView.
+                            menuItems.remove(position);
+                            databaseListAdapter.notifyDataSetChanged();
+
+                            dialog.dismiss();
                         }
                     })
                     .setNegativeButton("แก้ไข", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent intent = new Intent(ShowDatabaseActivity.this, EditDatabaseActivity.class);
-                            intent.putExtra(MenuTable.Columns._ID, itemId);
+                            intent.putExtra(MenuTable.Columns._ID, menuId);
                             startActivity(intent);
                         }
                     });

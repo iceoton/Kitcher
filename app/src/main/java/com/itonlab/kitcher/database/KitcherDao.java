@@ -74,6 +74,16 @@ public class KitcherDao {
         return menuItem;
     }
 
+    public void addMenu(MenuItem menuItem) {
+
+    }
+
+    public void deleteMenu(int menuId) {
+        String whereClause = "id=?";
+        String[] whereArgs = {String.valueOf(menuId)};
+        database.delete(MenuTable.TABLE_NAME, whereClause, whereArgs);
+    }
+
     public void updateMenu(MenuItem menuItem) {
         ContentValues values = new ContentValues();
         values.put(MenuTable.Columns._NAME_THAI, menuItem.getNameThai());
