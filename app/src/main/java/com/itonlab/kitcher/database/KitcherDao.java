@@ -41,7 +41,7 @@ public class KitcherDao {
 
     public ArrayList<MenuItem> getMenu() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        String sql = "SELECT * FROM menu";
+        String sql = "SELECT * FROM menu INNER JOIN picture ON picture_id = picture.id";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
@@ -62,7 +62,8 @@ public class KitcherDao {
 
     public MenuItem getMenuAtId(int menuId) {
         MenuItem menuItem = null;
-        String sql = "SELECT * FROM menu WHERE id = ?";
+        String sql = "SELECT * FROM menu INNER JOIN picture ON picture_id = picture.id" +
+                " WHERE menu.id = ?";
         String[] selectionArgs = {String.valueOf(menuId)};
         Cursor cursor = database.rawQuery(sql, selectionArgs);
 

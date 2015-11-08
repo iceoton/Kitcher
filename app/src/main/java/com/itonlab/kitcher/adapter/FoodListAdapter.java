@@ -1,7 +1,6 @@
 package com.itonlab.kitcher.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.model.MenuItem;
-import com.itonlab.kitcher.util.FileManager;
 
 import java.util.ArrayList;
 
@@ -47,14 +45,16 @@ public class FoodListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.food_list_item, parent, false);
         }
         MenuItem menuItem = menuItems.get(position);
+
         TextView tvName = (TextView)convertView.findViewById(R.id.tvName);
         tvName.setText(menuItem.getNameThai());
+
         TextView tvPrice = (TextView)convertView.findViewById(R.id.tvPrice);
         tvPrice.setText(Double.toString(menuItem.getPrice()));
+
         ImageView ivImgFood = (ImageView)convertView.findViewById(R.id.ivImgFood);
-        FileManager fileManager = new FileManager(mContext);
-        Drawable drawable = fileManager.getDrawableFromAsset(menuItem.getImgPath());
-        ivImgFood.setImageDrawable(drawable);
+        ivImgFood.setImageBitmap(menuItem.getPicture().getBitmapPicture());
+
 
         return convertView;
     }

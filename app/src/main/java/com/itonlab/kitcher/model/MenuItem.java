@@ -2,6 +2,7 @@ package com.itonlab.kitcher.model;
 
 import android.database.Cursor;
 
+
 /**
  * This class is item show in food menu.
  */
@@ -11,7 +12,7 @@ public class MenuItem {
     private String nameThai;
     private String nameEng;
     private double price;
-    private String imgPath;
+    private Picture picture;
 
     public static MenuItem newInstance(Cursor cursor) {
         MenuItem menuItem = new MenuItem();
@@ -26,7 +27,10 @@ public class MenuItem {
         this.nameThai = cursor.getString(cursor.getColumnIndexOrThrow(MenuTable.Columns._NAME_THAI));
         this.nameEng = cursor.getString(cursor.getColumnIndexOrThrow(MenuTable.Columns._NAME_ENG));
         this.price = cursor.getDouble(cursor.getColumnIndexOrThrow(MenuTable.Columns._PRICE));
-        this.imgPath = cursor.getString(cursor.getColumnIndexOrThrow(MenuTable.Columns._IMAGE_PATH));
+
+        int pictureId = cursor.getInt(cursor.getColumnIndexOrThrow(MenuTable.Columns._PICTURE_ID));
+        byte[] blobPicture = cursor.getBlob(cursor.getColumnIndexOrThrow(PictureTable.Columns._PICTURE));
+        picture = Picture.newInstance(pictureId, blobPicture);
     }
 
     public int getId() {
@@ -49,10 +53,6 @@ public class MenuItem {
         return price;
     }
 
-    public String getImgPath() {
-        return imgPath;
-    }
-
     public void setCode(String code) {
         this.code = code;
     }
@@ -69,7 +69,11 @@ public class MenuItem {
         this.price = price;
     }
 
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
+    public Picture getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Picture picture) {
+        this.picture = picture;
     }
 }

@@ -11,6 +11,6 @@ public class MenuTable {
         public static final String _NAME_THAI = "name_th";
         public static final String _NAME_ENG = "name_en";
         public static final String _PRICE = "price";
-        public static final String _IMAGE_PATH = "img";
+        public static final String _PICTURE_ID = "picture_id";
     }
 }
