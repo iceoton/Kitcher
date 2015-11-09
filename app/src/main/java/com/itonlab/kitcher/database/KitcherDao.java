@@ -14,6 +14,8 @@ import com.itonlab.kitcher.model.OrderDetailItem;
 import com.itonlab.kitcher.model.OrderItem;
 import com.itonlab.kitcher.model.OrderItemTable;
 import com.itonlab.kitcher.model.OrderTable;
+import com.itonlab.kitcher.model.Picture;
+import com.itonlab.kitcher.model.PictureTable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class KitcherDao {
 
     public ArrayList<MenuItem> getMenu() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        String sql = "SELECT * FROM menu INNER JOIN picture ON picture_id = picture.id";
+        String sql = "SELECT * FROM menu";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
@@ -62,7 +64,7 @@ public class KitcherDao {
 
     public MenuItem getMenuAtId(int menuId) {
         MenuItem menuItem = null;
-        String sql = "SELECT * FROM menu INNER JOIN picture ON picture_id = picture.id" +
+        String sql = "SELECT * FROM menu" +
                 " WHERE menu.id = ?";
         String[] selectionArgs = {String.valueOf(menuId)};
         Cursor cursor = database.rawQuery(sql, selectionArgs);
@@ -96,6 +98,22 @@ public class KitcherDao {
             Log.d(TAG, "[Menu]update menu id " + menuItem.getId() + " not successful.");
         }
 
+    }
+
+    public Picture getPicture(int pictureId) {
+        String sql = "SELECT * FROM picture WHERE id=?";
+        String[] selectionArgs = {String.valueOf(pictureId)};
+        Cursor cursor = database.rawQuery(sql, selectionArgs);
+
+        Picture picture = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            byte[] blobPicture = cursor.getBlob(cursor.getColumnIndexOrThrow(PictureTable.Columns._PICTURE));
+            picture = Picture.newInstance(pictureId, blobPicture);
+        }
+        cursor.close();
+
+        return picture;
     }
 
     public int addOrder(Order order) {

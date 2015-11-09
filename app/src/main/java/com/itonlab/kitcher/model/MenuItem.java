@@ -12,7 +12,7 @@ public class MenuItem {
     private String nameThai;
     private String nameEng;
     private double price;
-    private Picture picture;
+    private int pictureId;
 
     public static MenuItem newInstance(Cursor cursor) {
         MenuItem menuItem = new MenuItem();
@@ -27,10 +27,7 @@ public class MenuItem {
         this.nameThai = cursor.getString(cursor.getColumnIndexOrThrow(MenuTable.Columns._NAME_THAI));
         this.nameEng = cursor.getString(cursor.getColumnIndexOrThrow(MenuTable.Columns._NAME_ENG));
         this.price = cursor.getDouble(cursor.getColumnIndexOrThrow(MenuTable.Columns._PRICE));
-
-        int pictureId = cursor.getInt(cursor.getColumnIndexOrThrow(MenuTable.Columns._PICTURE_ID));
-        byte[] blobPicture = cursor.getBlob(cursor.getColumnIndexOrThrow(PictureTable.Columns._PICTURE));
-        picture = Picture.newInstance(pictureId, blobPicture);
+        this.pictureId = cursor.getInt(cursor.getColumnIndexOrThrow(MenuTable.Columns._PICTURE_ID));
     }
 
     public int getId() {
@@ -69,11 +66,11 @@ public class MenuItem {
         this.price = price;
     }
 
-    public Picture getPicture() {
-        return picture;
+    public int getPictureId() {
+        return pictureId;
     }
 
-    public void setPicture(Picture picture) {
-        this.picture = picture;
+    public void setPictureId(int pictureId) {
+        this.pictureId = pictureId;
     }
 }

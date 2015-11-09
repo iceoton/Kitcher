@@ -4,11 +4,9 @@ package com.itonlab.kitcher.model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import java.io.ByteArrayInputStream;
-
 public class Picture {
     private int id;
-    private Bitmap picture;
+    private byte[] picture;
 
     public static Picture newInstance(int id, byte[] blobImage) {
         Picture picture = new Picture();
@@ -27,12 +25,12 @@ public class Picture {
     }
 
     public Bitmap getBitmapPicture() {
-        return picture;
+        return BitmapFactory.decodeByteArray(picture, 0, picture.length);
     }
 
+
     public void setPicture(byte[] blobImage) {
-        ByteArrayInputStream imageStream = new ByteArrayInputStream(blobImage);
-        this.picture = BitmapFactory.decodeStream(imageStream);
+        this.picture = blobImage;
     }
 
 
