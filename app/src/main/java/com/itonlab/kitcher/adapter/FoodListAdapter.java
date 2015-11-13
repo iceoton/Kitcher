@@ -49,10 +49,10 @@ public class FoodListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ViewHolder viewHolder;
 
-        if(convertView == null){
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.food_list_item, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
@@ -76,6 +76,7 @@ public class FoodListAdapter extends BaseAdapter {
         databaseDao.open();
         Picture picture = databaseDao.getMenuPicture(menuItem.getPictureId());
         databaseDao.close();
+
         LoadPictureTask loadPictureTask = new LoadPictureTask(viewHolder.ivImgFood, picture);
         loadPictureTask.execute();
         viewHolder.ivImgFood.setTag(loadPictureTask);

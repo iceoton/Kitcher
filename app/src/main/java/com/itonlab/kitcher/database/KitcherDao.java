@@ -47,7 +47,7 @@ public class KitcherDao {
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            MenuItem menuItem = null;
+            MenuItem menuItem;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 menuItem = MenuItem.newInstance(cursor);
@@ -88,15 +88,17 @@ public class KitcherDao {
     }
 
     public void deleteMenu(int menuId) {
+        // delete its picture
+        int pictureId = getMenuAtId(menuId).getPictureId();
+        deleteMenuPicture(pictureId);
+        // and last, delete it
         String whereClause = "id=?";
         String[] whereArgs = {String.valueOf(menuId)};
         database.delete(MenuTable.TABLE_NAME, whereClause, whereArgs);
     }
 
     public void updateMenu(MenuItem menuItem) {
-        ContentValues values = new ContentValues();
-        values.put(MenuTable.Columns._NAME_THAI, menuItem.getNameThai());
-        values.put(MenuTable.Columns._PRICE, menuItem.getPrice());
+        ContentValues values = menuItem.toContentValues();
         String[] whereArgs = {String.valueOf(menuItem.getId())};
 
         int affected = database.update(MenuTable.TABLE_NAME, values, "id=?", whereArgs);
@@ -114,10 +116,10 @@ public class KitcherDao {
         Picture picture = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            byte[] blobPicture = cursor.getBlob(cursor.getColumnIndexOrThrow(PictureTable.Columns._PICTURE));
-            picture = Picture.newInstance(pictureId, blobPicture);
+            picture = Picture.newInstance(cursor);
         }
         cursor.close();
+
 
         return picture;
     }
@@ -134,6 +136,22 @@ public class KitcherDao {
         return (int) insertIndex;
     }
 
+    public void updateMenuPicture(Picture picture) {
+        ContentValues values = picture.toContentValues();
+        String[] whereArgs = {String.valueOf(picture.getId())};
+
+        int affected = database.update(PictureTable.TABLE_NAME, values, "id=?", whereArgs);
+        if (affected == 0) {
+            Log.d(TAG, "[Menu]update menu id " + picture.getId() + " not successful.");
+        }
+    }
+
+    public void deleteMenuPicture(int pictureId) {
+        String whereClause = "id=?";
+        String[] whereArgs = {String.valueOf(pictureId)};
+        database.delete(PictureTable.TABLE_NAME, whereClause, whereArgs);
+    }
+
     public int addOrder(Order order) {
         ContentValues values = order.toContentValues();
         long insertIndex = database.insert(OrderTable.TABLE_NAME, null, values);
@@ -146,11 +164,11 @@ public class KitcherDao {
         return (int) insertIndex;
     }
 
-    public void setOrderServed(int orderId, boolean served){
+    public void setOrderServed(int orderId, boolean served) {
         ContentValues values = new ContentValues();
         // 1 is served and 0 don't serve.
         int servedInteger = 0;
-        if(served){
+        if (served) {
             servedInteger = 1;
         }
         values.put(OrderTable.Columns._SERVED, servedInteger);
@@ -178,10 +196,10 @@ public class KitcherDao {
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            Order order = null;
+            Order order;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                order = order.newInstance(cursor);
+                order = Order.newInstance(cursor);
                 orders.add(order);
                 cursor.moveToNext();
             }
@@ -199,10 +217,10 @@ public class KitcherDao {
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            Order order = null;
+            Order order;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                order = order.newInstance(cursor);
+                order = Order.newInstance(cursor);
                 orders.add(order);
                 cursor.moveToNext();
             }
@@ -220,10 +238,10 @@ public class KitcherDao {
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
-            Order order = null;
+            Order order;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                order = order.newInstance(cursor);
+                order = Order.newInstance(cursor);
                 orders.add(order);
                 cursor.moveToNext();
             }
@@ -244,7 +262,7 @@ public class KitcherDao {
         Cursor cursor = database.rawQuery(sql, whereArgs);
 
         if (cursor.getCount() > 0) {
-            OrderDetailItem orderDetailItem = null;
+            OrderDetailItem orderDetailItem;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 orderDetailItem = new OrderDetailItem();
@@ -271,7 +289,7 @@ public class KitcherDao {
         String day = dateFormat.format(date);
         Log.d(TAG, "Get " + day + " income");
         String sql = "SELECT SUM(total_price) as total_price FROM 'order' " +
-                "WHERE order_time like '" + day +"%' AND served=1";
+                "WHERE order_time like '" + day + "%' AND served=1";
         Cursor cursor = database.rawQuery(sql, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();

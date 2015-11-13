@@ -2,6 +2,11 @@ package com.itonlab.kitcher.ui;
 
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,14 +21,19 @@ import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.MenuTable;
 import com.itonlab.kitcher.model.Picture;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
-public class EditDatabaseActivity  extends Activity{
+
+public class EditDatabaseActivity extends Activity {
+    private static final int PICTURE_REQUEST_CODE = 1;
     private int menuId;
     private KitcherDao databaseDao;
     private MenuItem menuItem;
     private ImageView imageViewFood;
     private EditText etName, etPrice;
     private Button btnSave;
+    private Picture pictureFood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +58,11 @@ public class EditDatabaseActivity  extends Activity{
                     saveToDatabase();
                 }
             });
+
+            etName.setText(menuItem.getNameThai());
+            etPrice.setText(String.valueOf(menuItem.getPrice()));
+            pictureFood = databaseDao.getMenuPicture(menuItem.getPictureId());
+            imageViewFood.setImageBitmap(pictureFood.getBitmapPicture());
         } else {
             // to add new data
             menuItem = new MenuItem();
@@ -60,10 +75,36 @@ public class EditDatabaseActivity  extends Activity{
             });
         }
 
-        Picture pictureFood = databaseDao.getMenuPicture(menuItem.getPictureId());
-        imageViewFood.setImageBitmap(pictureFood.getBitmapPicture());
-        etName.setText(menuItem.getNameThai());
-        etPrice.setText(String.valueOf(menuItem.getPrice()));
+        imageViewFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select app to pick picture"), PICTURE_REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if ((requestCode == PICTURE_REQUEST_CODE) && (resultCode == RESULT_OK)) {
+            Uri imageUri = data.getData();
+            Bitmap imageBitmap;
+            InputStream imageInputStream;
+            try {
+                imageInputStream = getContentResolver().openInputStream(imageUri);
+                imageBitmap = BitmapFactory.decodeStream(imageInputStream);
+                Bitmap resized = Bitmap.createScaledBitmap(imageBitmap, 300, 225, true);
+                imageViewFood.setImageBitmap(resized);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -78,11 +119,12 @@ public class EditDatabaseActivity  extends Activity{
         databaseDao.close();
     }
 
-    private void saveToDatabase(){
+    private void saveToDatabase() {
         String menuName = etName.getText().toString().trim();
         double price = Double.parseDouble(etPrice.getText().toString().trim());
         menuItem.setNameThai(menuName);
         menuItem.setPrice(price);
+        updateMenuPicture();
         databaseDao.updateMenu(menuItem);
         finish();
     }
@@ -93,10 +135,28 @@ public class EditDatabaseActivity  extends Activity{
         if (!menuName.equals("")) {
             menuItem.setNameThai(menuName);
             menuItem.setPrice(price);
+            menuItem.setPictureId(addMenuPicture());
             databaseDao.addMenu(menuItem);
             finish();
         } else {
             Toast.makeText(getApplicationContext(), "Please enter menu name...", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private int addMenuPicture() {
+        Drawable drawable = imageViewFood.getDrawable();
+        pictureFood = new Picture();
+        pictureFood.setPicture(drawable);
+        return databaseDao.addMenuPicture(pictureFood);
+    }
+
+    private void updateMenuPicture() {
+        Drawable drawable = imageViewFood.getDrawable();
+        pictureFood = new Picture();
+        pictureFood.setId(menuItem.getPictureId());
+        pictureFood.setPicture(drawable);
+        databaseDao.updateMenuPicture(pictureFood);
+    }
+
 }
+

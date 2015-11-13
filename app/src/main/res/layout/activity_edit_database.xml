@@ -37,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/normal_layout_margin"
             android:minWidth="120dp"
-            android:singleLine="false" />
+            android:singleLine="false"
+            android:hint="เช่น ผัดกะเพรา" />
 
     </LinearLayout>
 
@@ -69,7 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/normal_layout_margin"
                 android:inputType="number"
-                android:minWidth="80dp" />
+                android:minWidth="80dp"
+                android:text="0.0" />
 
             <TextView
                 android:layout_width="wrap_content"

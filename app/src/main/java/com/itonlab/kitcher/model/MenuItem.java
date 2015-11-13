@@ -20,7 +20,7 @@ public class MenuItem {
         this.nameEng = "";
         this.nameThai = "";
         this.price = 0d;
-        this.pictureId = 1;
+        this.pictureId = 0;
     }
 
     public ContentValues toContentValues() {
