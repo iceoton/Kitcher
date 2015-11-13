@@ -78,7 +78,13 @@ public class KitcherDao {
     }
 
     public void addMenu(MenuItem menuItem) {
-
+        ContentValues values = menuItem.toContentValues();
+        long insertIndex = database.insert(MenuTable.TABLE_NAME, null, values);
+        if (insertIndex == -1) {
+            Log.d(TAG, "An error occurred on inserting menu table.");
+        } else {
+            Log.d(TAG, "insert menu successful.");
+        }
     }
 
     public void deleteMenu(int menuId) {
@@ -114,6 +120,18 @@ public class KitcherDao {
         cursor.close();
 
         return picture;
+    }
+
+    public int addMenuPicture(Picture picture) {
+        ContentValues values = picture.toContentValues();
+        long insertIndex = database.insert(PictureTable.TABLE_NAME, null, values);
+        if (insertIndex == -1) {
+            Log.d(TAG, "An error occurred on inserting picture table.");
+        } else {
+            Log.d(TAG, "insert picture successful.");
+        }
+
+        return (int) insertIndex;
     }
 
     public int addOrder(Order order) {

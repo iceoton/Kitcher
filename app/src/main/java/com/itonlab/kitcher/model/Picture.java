@@ -1,6 +1,7 @@
 package com.itonlab.kitcher.model;
 
 
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -14,6 +15,13 @@ public class Picture {
         picture.setPicture(blobImage);
 
         return picture;
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(PictureTable.Columns._PICTURE, this.picture);
+
+        return values;
     }
 
     public int getId() {
@@ -32,6 +40,4 @@ public class Picture {
     public void setPicture(byte[] blobImage) {
         this.picture = blobImage;
     }
-
-
 }

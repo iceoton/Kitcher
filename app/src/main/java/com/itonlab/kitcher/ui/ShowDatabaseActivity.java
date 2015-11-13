@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.itonlab.kitcher.R;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class ShowDatabaseActivity extends Activity {
     private KitcherDao databaseDao;
     private ListView lvData;
+    private Button btnAddData;
     private ArrayList<MenuItem> menuItems;
     DatabaseListAdapter databaseListAdapter;
 
@@ -34,6 +36,9 @@ public class ShowDatabaseActivity extends Activity {
         lvData = (ListView) findViewById(R.id.listData);
         menuItems = databaseDao.getMenu();
         lvData.setOnItemClickListener(listDataOnItemClick);
+
+        btnAddData = (Button) findViewById(R.id.btnAdd);
+        btnAddData.setOnClickListener(addDataOnclickListener);
     }
 
     @Override
@@ -80,6 +85,15 @@ public class ShowDatabaseActivity extends Activity {
             AlertDialog dialog = builder.create();
             dialog.show();
 
+        }
+    };
+
+    View.OnClickListener addDataOnclickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(ShowDatabaseActivity.this, EditDatabaseActivity.class);
+            intent.putExtra(MenuTable.Columns._ID, 0);
+            startActivity(intent);
         }
     };
 

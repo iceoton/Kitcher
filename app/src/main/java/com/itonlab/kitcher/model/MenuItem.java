@@ -1,5 +1,6 @@
 package com.itonlab.kitcher.model;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 
@@ -13,6 +14,25 @@ public class MenuItem {
     private String nameEng;
     private double price;
     private int pictureId;
+
+    public MenuItem() {
+        this.code = "";
+        this.nameEng = "";
+        this.nameThai = "";
+        this.price = 0d;
+        this.pictureId = 1;
+    }
+
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(MenuTable.Columns._CODE, this.code);
+        values.put(MenuTable.Columns._NAME_THAI, this.nameThai);
+        values.put(MenuTable.Columns._NAME_ENG, this.nameEng);
+        values.put(MenuTable.Columns._PRICE, this.price);
+        values.put(MenuTable.Columns._PICTURE_ID, this.pictureId);
+
+        return values;
+    }
 
     public static MenuItem newInstance(Cursor cursor) {
         MenuItem menuItem = new MenuItem();

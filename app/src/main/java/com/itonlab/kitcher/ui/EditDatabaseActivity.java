@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.database.KitcherDao;
@@ -32,27 +33,37 @@ public class EditDatabaseActivity  extends Activity{
         databaseDao = new KitcherDao(EditDatabaseActivity.this);
         databaseDao.open();
 
-        menuId = getIntent().getIntExtra(MenuTable.Columns._ID,0);
-        Log.d("DATABASE", "menu_id = " + menuId);
-
-        menuItem = databaseDao.getMenuAtId(menuId);
-
         imageViewFood = (ImageView) findViewById(R.id.ivImgFood);
+        etName = (EditText) findViewById(R.id.etName);
+        etPrice = (EditText) findViewById(R.id.etPrice);
+        btnSave = (Button) findViewById(R.id.btnSave);
+
+        menuId = getIntent().getIntExtra(MenuTable.Columns._ID, 0);
+        Log.d("DATABASE", "menu_id = " + menuId);
+        if (menuId != 0) {
+            menuItem = databaseDao.getMenuAtId(menuId);
+            btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveToDatabase();
+                }
+            });
+        } else {
+            // to add new data
+            menuItem = new MenuItem();
+            btnSave.setText(getResources().getText(R.string.text_add));
+            btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addDataToDatabase();
+                }
+            });
+        }
+
         Picture pictureFood = databaseDao.getMenuPicture(menuItem.getPictureId());
         imageViewFood.setImageBitmap(pictureFood.getBitmapPicture());
-        etName = (EditText) findViewById(R.id.etName);
         etName.setText(menuItem.getNameThai());
-        etPrice = (EditText) findViewById(R.id.etPrice);
         etPrice.setText(String.valueOf(menuItem.getPrice()));
-
-        btnSave = (Button) findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveToDatabase();
-                finish();
-            }
-        });
     }
 
     @Override
@@ -73,5 +84,19 @@ public class EditDatabaseActivity  extends Activity{
         menuItem.setNameThai(menuName);
         menuItem.setPrice(price);
         databaseDao.updateMenu(menuItem);
+        finish();
+    }
+
+    private void addDataToDatabase() {
+        String menuName = etName.getText().toString().trim();
+        double price = Double.parseDouble(etPrice.getText().toString().trim());
+        if (!menuName.equals("")) {
+            menuItem.setNameThai(menuName);
+            menuItem.setPrice(price);
+            databaseDao.addMenu(menuItem);
+            finish();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please enter menu name...", Toast.LENGTH_SHORT).show();
+        }
     }
 }
