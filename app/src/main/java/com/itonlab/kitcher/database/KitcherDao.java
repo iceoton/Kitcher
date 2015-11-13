@@ -100,7 +100,7 @@ public class KitcherDao {
 
     }
 
-    public Picture getPicture(int pictureId) {
+    public Picture getMenuPicture(int pictureId) {
         String sql = "SELECT * FROM picture WHERE id=?";
         String[] selectionArgs = {String.valueOf(pictureId)};
         Cursor cursor = database.rawQuery(sql, selectionArgs);

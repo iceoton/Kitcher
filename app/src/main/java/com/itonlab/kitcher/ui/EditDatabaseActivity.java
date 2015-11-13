@@ -7,17 +7,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.MenuTable;
+import com.itonlab.kitcher.model.Picture;
 
 
 public class EditDatabaseActivity  extends Activity{
     private int menuId;
     private KitcherDao databaseDao;
     private MenuItem menuItem;
+    private ImageView imageViewFood;
     private EditText etName, etPrice;
     private Button btnSave;
 
@@ -33,6 +36,10 @@ public class EditDatabaseActivity  extends Activity{
         Log.d("DATABASE", "menu_id = " + menuId);
 
         menuItem = databaseDao.getMenuAtId(menuId);
+
+        imageViewFood = (ImageView) findViewById(R.id.ivImgFood);
+        Picture pictureFood = databaseDao.getMenuPicture(menuItem.getPictureId());
+        imageViewFood.setImageBitmap(pictureFood.getBitmapPicture());
         etName = (EditText) findViewById(R.id.etName);
         etName.setText(menuItem.getNameThai());
         etPrice = (EditText) findViewById(R.id.etPrice);

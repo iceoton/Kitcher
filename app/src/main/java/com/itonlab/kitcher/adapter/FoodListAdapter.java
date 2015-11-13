@@ -74,7 +74,7 @@ public class FoodListAdapter extends BaseAdapter {
 
         KitcherDao databaseDao = new KitcherDao(mContext);
         databaseDao.open();
-        Picture picture = databaseDao.getPicture(menuItem.getPictureId());
+        Picture picture = databaseDao.getMenuPicture(menuItem.getPictureId());
         databaseDao.close();
         LoadPictureTask loadPictureTask = new LoadPictureTask(viewHolder.ivImgFood, picture);
         loadPictureTask.execute();

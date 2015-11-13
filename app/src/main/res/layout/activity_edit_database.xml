@@ -2,10 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center|top"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="225dp"
+        android:layout_height="150dp"
+        android:layout_margin="@dimen/normal_layout_margin">
+
+        <ImageView
+            android:id="@+id/ivImgFood"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/no_image" />
+
+    </FrameLayout>
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/normal_layout_margin"
         android:orientation="vertical">
@@ -17,10 +33,10 @@
 
         <EditText
             android:id="@+id/etName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="120dp"
             android:layout_margin="@dimen/normal_layout_margin"
+            android:minWidth="120dp"
             android:singleLine="false" />
 
     </LinearLayout>
@@ -32,7 +48,7 @@
         android:layerType="software" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/normal_layout_margin"
         android:orientation="vertical">
@@ -43,7 +59,7 @@
             android:text=" ราคา : " />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -51,9 +67,9 @@
                 android:id="@+id/etPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="80dp"
                 android:layout_margin="@dimen/normal_layout_margin"
-                android:inputType="number" />
+                android:inputType="number"
+                android:minWidth="80dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -73,11 +89,11 @@
 
     <Button
         android:id="@+id/btnSave"
-        android:layout_margin="@dimen/normal_layout_margin"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:text="บันทึก"/>
+        android:layout_margin="@dimen/normal_layout_margin"
+        android:text="บันทึก" />
 
 
 </LinearLayout>
