@@ -63,7 +63,7 @@ public class KitcherDao {
     }
 
     public MenuItem getMenuAtId(int menuId) {
-        MenuItem menuItem = null;
+        MenuItem menuItem = new MenuItem();
         String sql = "SELECT * FROM menu" +
                 " WHERE menu.id = ?";
         String[] selectionArgs = {String.valueOf(menuId)};
@@ -165,15 +165,17 @@ public class KitcherDao {
     }
 
     public void setOrderServed(int orderId, boolean served) {
-        ContentValues values = new ContentValues();
         // 1 is served and 0 don't serve.
         int servedInteger = 0;
         if (served) {
             servedInteger = 1;
         }
+        ContentValues values = new ContentValues();
         values.put(OrderTable.Columns._SERVED, servedInteger);
         String[] whereArgs = {String.valueOf(orderId)};
 
+        // update its order item
+        database.update(OrderItemTable.TABLE_NAME, values, "order_id=?", whereArgs);
         int affected = database.update(OrderTable.TABLE_NAME, values, "id=?", whereArgs);
         if (affected == 0) {
             Log.d(TAG, "[Order]update served value in order id " + orderId + " not successful.");
@@ -282,6 +284,22 @@ public class KitcherDao {
         return orderDetailItems;
     }
 
+    public MenuItem getPopularFood() {
+        MenuItem menuItem = new MenuItem();
+        String sql = "SELECT SUM(amount) AS frequency, menu_id" +
+                " FROM 'order_item' WHERE served=1 GROUP BY menu_id ORDER BY frequency DESC";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            int popMenuId = cursor.getInt(1); // get menu_id
+            menuItem = getMenuAtId(popMenuId);
+        }
+        cursor.close();
+
+        return menuItem;
+    }
+
 
     public double getDayIncome(Date date) {
         double income = 0.0;
@@ -290,6 +308,23 @@ public class KitcherDao {
         Log.d(TAG, "Get " + day + " income");
         String sql = "SELECT SUM(total_price) as total_price FROM 'order' " +
                 "WHERE order_time like '" + day + "%' AND served=1";
+        Cursor cursor = database.rawQuery(sql, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            income = cursor.getDouble(cursor.getColumnIndexOrThrow("total_price"));
+        }
+        cursor.close();
+
+        return income;
+    }
+
+    public double getMonthIncome(Date date) {
+        double income = 0.0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+        String month = dateFormat.format(date);
+        Log.d(TAG, "Get " + month + " income");
+        String sql = "SELECT SUM(total_price) as total_price FROM 'order' " +
+                "WHERE order_time like '" + month + "%' AND served=1";
         Cursor cursor = database.rawQuery(sql, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();

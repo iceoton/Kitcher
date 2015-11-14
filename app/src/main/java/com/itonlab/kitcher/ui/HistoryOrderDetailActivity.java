@@ -2,6 +2,7 @@ package com.itonlab.kitcher.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -10,11 +11,16 @@ import com.itonlab.kitcher.adapter.OrderDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.OrderDetailItem;
 import com.itonlab.kitcher.model.OrderTable;
+import com.itonlab.kitcher.util.OrderFunction;
 
 import java.util.ArrayList;
 
+import app.akexorcist.simpletcplibrary.SimpleTCPServer;
+
 
 public class HistoryOrderDetailActivity extends Activity {
+    public final int TCP_PORT = 21111;
+    private SimpleTCPServer server;
     private int orderId;
     private String orderTime;
     private KitcherDao databaseDao;
@@ -30,6 +36,16 @@ public class HistoryOrderDetailActivity extends Activity {
 
         databaseDao = new KitcherDao(HistoryOrderDetailActivity.this);
         databaseDao.open();
+
+        // initial TCP server
+        server = new SimpleTCPServer(TCP_PORT);
+        server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
+            public void onDataReceived(String message, String ip) {
+                Log.d("JSON", message);
+                OrderFunction orderFunction = new OrderFunction(getApplicationContext());
+                orderFunction.acceptJSONOrder(message);
+            }
+        });
 
         orderId = getIntent().getIntExtra(OrderTable.Columns._ID, 0);
         orderTime = getIntent().getStringExtra(OrderTable.Columns._ORDER_TIME);
@@ -52,12 +68,14 @@ public class HistoryOrderDetailActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        server.start();
         databaseDao.open();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
+        server.stop();
         databaseDao.close();
     }
 

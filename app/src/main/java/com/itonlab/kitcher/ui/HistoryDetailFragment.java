@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,17 @@ import com.itonlab.kitcher.adapter.HistoryDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.Order;
 import com.itonlab.kitcher.model.OrderTable;
+import com.itonlab.kitcher.util.OrderFunction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import app.akexorcist.simpletcplibrary.SimpleTCPServer;
+
 public class HistoryDetailFragment extends Fragment{
+    public final int TCP_PORT = 21111;
+    private SimpleTCPServer server;
     private KitcherDao databaseDao;
     private ArrayList<Order> orders;
     private ListView listViewOrder;
@@ -35,6 +41,16 @@ public class HistoryDetailFragment extends Fragment{
 
         databaseDao = new KitcherDao(getActivity());
         databaseDao.open();
+
+        // initial TCP server
+        server = new SimpleTCPServer(TCP_PORT);
+        server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
+            public void onDataReceived(String message, String ip) {
+                Log.d("JSON", message);
+                OrderFunction orderFunction = new OrderFunction(getActivity());
+                orderFunction.acceptJSONOrder(message);
+            }
+        });
 
         orders = databaseDao.getAllOrderServed();
         listViewOrder = (ListView) rootView.findViewById(R.id.listViewOrder);
@@ -71,12 +87,14 @@ public class HistoryDetailFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+        server.start();
         databaseDao.open();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
+        server.stop();
         databaseDao.close();
     }
 }

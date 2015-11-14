@@ -16,7 +16,7 @@
             style="@style/text_bill_list_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="3"
             android:singleLine="true"
             android:text="ชื่ออาหาร" />
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="80" />
+            android:text="80.0" />
 
     </LinearLayout>
 

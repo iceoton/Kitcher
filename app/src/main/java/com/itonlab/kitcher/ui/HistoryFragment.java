@@ -23,6 +23,7 @@ import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.custom.MyValueFormatter;
 import com.itonlab.kitcher.custom.MyYAxisValueFormatter;
 import com.itonlab.kitcher.database.KitcherDao;
+import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.util.OrderFunction;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +40,7 @@ public class HistoryFragment extends Fragment {
     private SimpleTCPServer server;
     private KitcherDao databaseDao;
 
-    private TextView tvTodayIncome;
+    private TextView tvTodayIncome, tvMonthIncome, tvPopFoodName;
     private BarChart barChartWeek;
     private Button btnDetail;
 
@@ -62,7 +63,12 @@ public class HistoryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
         tvTodayIncome = (TextView) rootView.findViewById(R.id.tvTodayIncome);
-        loadTodayIncome();
+        tvMonthIncome = (TextView) rootView.findViewById(R.id.tvMonthIncome);
+        loadIncome();
+        tvPopFoodName = (TextView) rootView.findViewById(R.id.tvFoodName);
+        MenuItem popMenuItem = databaseDao.getPopularFood();
+        Log.d("DEBUG", "pop menu:" + popMenuItem.getNameThai());
+        tvPopFoodName.setText(popMenuItem.getNameThai());
 
         barChartWeek = (BarChart) rootView.findViewById(R.id.chartWeek);
         barChartWeek.setDescription("");
@@ -94,9 +100,11 @@ public class HistoryFragment extends Fragment {
         databaseDao.close();
     }
 
-    private void loadTodayIncome() {
+    private void loadIncome() {
         double todayIncome = databaseDao.getDayIncome(new Date());
+        double monthIncome = databaseDao.getMonthIncome(new Date());
         tvTodayIncome.setText(String.valueOf(todayIncome) + " บาท");
+        tvMonthIncome.setText(String.valueOf(monthIncome) + " บาท");
     }
 
     private void loadBarChartWeek() {
