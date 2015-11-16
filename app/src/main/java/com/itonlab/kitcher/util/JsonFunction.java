@@ -1,42 +1,154 @@
 package com.itonlab.kitcher.util;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.itonlab.kitcher.database.KitcherDao;
+import com.itonlab.kitcher.model.Order;
+import com.itonlab.kitcher.model.OrderItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 
 public class JsonFunction {
     private Context mContext;
+
+    public static class Message {
+        public enum Type {
+            ORDER_MESSAGE("order_ms"),
+            SYNC_DATA_MESSAGE("sync_data_ms");
+
+            Type(String key) {
+                this.jsonKey = key;
+            }
+
+            public String getJsonKey() {
+                return this.jsonKey;
+            }
+
+            private String jsonKey;
+        }
+
+        private Type messageType;
+        private String fromIP;
+        private JSONObject jsonBody;
+
+        public Type getMessageType() {
+            return messageType;
+        }
+
+        public void setMessageType(String messageTypeKey) {
+            try {
+                if (messageTypeKey.equals(Type.ORDER_MESSAGE.getJsonKey())) {
+                    this.messageType = Type.ORDER_MESSAGE;
+                } else if (messageTypeKey.equals(Type.SYNC_DATA_MESSAGE.getJsonKey())) {
+                    this.messageType = Type.SYNC_DATA_MESSAGE;
+                } else {
+                    throw new JSONException("Message type key can't accepted.");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public String getFromIP() {
+            return fromIP;
+        }
+
+        public void setFromIP(String fromIP) {
+            this.fromIP = fromIP;
+        }
+
+        public JSONObject getJsonBody() {
+            return jsonBody;
+        }
+
+        public void setJsonBody(JSONObject jsonBody) {
+            this.jsonBody = jsonBody;
+        }
+    }
 
     public JsonFunction(Context context) {
         this.mContext = context;
     }
 
-    public OrderFunction.ClientOrder getOrderFromJSON(String json) {
-        OrderFunction.ClientOrder clientOrder = new OrderFunction.ClientOrder();
+    public static Message acceptMessage(String json) {
+        Log.d("JSON", json);
+        Message message = new Message();
         try {
-            JSONObject jsonOrder = new JSONObject(json);
-            clientOrder.setName(jsonOrder.getString("name"));
-            clientOrder.setIp(jsonOrder.getString("ip"));
-            clientOrder.setTotal(jsonOrder.getInt("total"));
-            clientOrder.setTotalPrice(jsonOrder.getDouble("total_price"));
-            JSONArray jsonArrayOrderItems = jsonOrder.getJSONArray("order");
+            JSONObject jsonObject = new JSONObject(json);
+
+            message.setMessageType(jsonObject.getString("message_type"));
+            message.setFromIP(jsonObject.getString("from_ip"));
+            message.setJsonBody(jsonObject.getJSONObject("body"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return message;
+    }
+
+    public void decideWhatToDo(Message message) {
+        switch (message.getMessageType()) {
+            case ORDER_MESSAGE:
+                acceptOrderFromClient(message);
+                break;
+            case SYNC_DATA_MESSAGE:
+                acceptSyncDataRequest(message);
+                break;
+            default:
+                Log.d("JSON", "Do nothing");
+        }
+    }
+
+    public Order acceptOrderFromClient(Message message) {
+        Order order = new Order();
+        JSONObject body = message.getJsonBody();
+        try {
+            order.setCustomerName(body.getString("name"));
+            order.setCustomerIP(message.getFromIP());
+            order.setTotal(body.getInt("total"));
+            order.setTotalPrice(body.getDouble("total_price"));
+            Date now = new Date();
+            order.setOrderTime(now);
+
+            KitcherDao database = new KitcherDao(mContext);
+            database.open();
+            int orderId = database.addOrder(order);
+            order.setId(orderId);
+
+            JSONArray jsonArrayOrderItems = body.getJSONArray("order");
             for (int i = 0; i < jsonArrayOrderItems.length(); i++) {
                 JSONObject jsonOrderItem = jsonArrayOrderItems.getJSONObject(i);
-                OrderFunction.ClientOrderItem clientOrderItem = new OrderFunction.ClientOrderItem();
-                clientOrderItem.setId(jsonOrderItem.getInt("id"));
-                clientOrderItem.setAmount(jsonOrderItem.getInt("amount"));
-                clientOrderItem.setOption(jsonOrderItem.getString("option"));
-                clientOrder.addOrderItems(clientOrderItem);
+                // add all order item after add order is complete.
+                OrderItem orderItem = new OrderItem();
+                orderItem.setOrderID(orderId);
+                orderItem.setMenuID(jsonOrderItem.getInt("menu_id"));
+                orderItem.setAmount(jsonOrderItem.getInt("amount"));
+                orderItem.setOption(jsonOrderItem.getString("option"));
+                database.addOrderItem(orderItem);
             }
+            database.close();
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return clientOrder;
+        return order;
+    }
+
+    private void acceptSyncDataRequest(Message message) {
+        if (message.getMessageType().equals(Message.Type.SYNC_DATA_MESSAGE)) {
+            //read file from storage
+
+            //send it to client
+            //final int TCP_PORT = 21111;
+            //SimpleTCPClient.send("data file", message.getFromIP(), TCP_PORT);
+        }
     }
 
 }

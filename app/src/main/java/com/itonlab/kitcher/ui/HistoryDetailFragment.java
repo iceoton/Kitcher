@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.itonlab.kitcher.adapter.HistoryDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.Order;
 import com.itonlab.kitcher.model.OrderTable;
-import com.itonlab.kitcher.util.OrderFunction;
+import com.itonlab.kitcher.util.JsonFunction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,9 +45,8 @@ public class HistoryDetailFragment extends Fragment{
         server = new SimpleTCPServer(TCP_PORT);
         server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
             public void onDataReceived(String message, String ip) {
-                Log.d("JSON", message);
-                OrderFunction orderFunction = new OrderFunction(getActivity());
-                orderFunction.acceptJSONOrder(message);
+                JsonFunction jsonFunction = new JsonFunction(getActivity());
+                jsonFunction.decideWhatToDo(JsonFunction.acceptMessage(message));
             }
         });
 

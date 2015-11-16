@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ import com.itonlab.kitcher.custom.MyValueFormatter;
 import com.itonlab.kitcher.custom.MyYAxisValueFormatter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.MenuItem;
-import com.itonlab.kitcher.util.OrderFunction;
+import com.itonlab.kitcher.util.JsonFunction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ public class HistoryFragment extends Fragment {
     private BarChart barChartWeek;
     private Button btnDetail;
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // initial database access object
@@ -54,9 +52,8 @@ public class HistoryFragment extends Fragment {
         server = new SimpleTCPServer(TCP_PORT);
         server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
             public void onDataReceived(String message, String ip) {
-                Log.d("JSON", message);
-                OrderFunction orderFunction = new OrderFunction(getActivity());
-                orderFunction.acceptJSONOrder(message);
+                JsonFunction jsonFunction = new JsonFunction(getActivity());
+                jsonFunction.decideWhatToDo(JsonFunction.acceptMessage(message));
             }
         });
 

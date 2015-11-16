@@ -17,7 +17,7 @@ import com.itonlab.kitcher.model.Picture;
 
 import java.util.ArrayList;
 
-public class FoodListAdapter extends BaseAdapter {
+public class MenuListAdapter extends BaseAdapter {
     Context mContext;
     ArrayList<MenuItem> menuItems;
 
@@ -27,7 +27,7 @@ public class FoodListAdapter extends BaseAdapter {
         ImageView ivImgFood = null;
     }
 
-    public FoodListAdapter(Context context, ArrayList<MenuItem> menuItems) {
+    public MenuListAdapter(Context context, ArrayList<MenuItem> menuItems) {
         this.mContext = context;
         this.menuItems = menuItems;
     }

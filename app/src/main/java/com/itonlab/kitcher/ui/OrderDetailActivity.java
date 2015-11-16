@@ -2,7 +2,6 @@ package com.itonlab.kitcher.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -12,7 +11,7 @@ import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.OrderDetailItem;
-import com.itonlab.kitcher.util.OrderFunction;
+import com.itonlab.kitcher.util.JsonFunction;
 
 import java.util.ArrayList;
 
@@ -33,9 +32,8 @@ public class OrderDetailActivity extends Activity {
         server = new SimpleTCPServer(TCP_PORT);
         server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
             public void onDataReceived(String message, String ip) {
-                Log.d("JSON", message);
-                OrderFunction orderFunction = new OrderFunction(OrderDetailActivity.this);
-                orderFunction.acceptJSONOrder(message);
+                JsonFunction jsonFunction = new JsonFunction(OrderDetailActivity.this);
+                jsonFunction.decideWhatToDo(JsonFunction.acceptMessage(message));
             }
         });
         databaseDao = new KitcherDao(OrderDetailActivity.this);

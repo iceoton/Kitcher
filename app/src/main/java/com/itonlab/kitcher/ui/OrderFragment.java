@@ -3,7 +3,6 @@ package com.itonlab.kitcher.ui;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.Order;
-import com.itonlab.kitcher.util.OrderFunction;
+import com.itonlab.kitcher.util.JsonFunction;
 
 import java.util.ArrayList;
 
@@ -38,17 +37,22 @@ public class OrderFragment extends Fragment {
         server = new SimpleTCPServer(TCP_PORT);
         server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
             public void onDataReceived(String message, String ip) {
-                Log.d("JSON", message);
-                OrderFunction orderFunction = new OrderFunction(getActivity());
-                Order order = orderFunction.acceptJSONOrder(message);
-                // put "new order" to ListView
-                orders.add(0, order);
-                orderListAdapter.notifyDataSetChanged();
-                listViewOrder.post(new Runnable() {
-                    public void run() {
-                        listViewOrder.smoothScrollToPosition(listViewOrder.getCount() - 1);
-                    }
-                });
+                JsonFunction jsonFunction = new JsonFunction(getActivity());
+                JsonFunction.Message appMessage = JsonFunction.acceptMessage(message);
+                if (appMessage.getMessageType().equals(JsonFunction.Message.Type.ORDER_MESSAGE)) {
+                    Order order = jsonFunction.acceptOrderFromClient(appMessage);
+
+                    // put "new order" to ListView
+                    orders.add(0, order);
+                    orderListAdapter.notifyDataSetChanged();
+                    listViewOrder.post(new Runnable() {
+                        public void run() {
+                            listViewOrder.smoothScrollToPosition(listViewOrder.getCount() - 1);
+                        }
+                    });
+                } else {
+                    jsonFunction.decideWhatToDo(appMessage);
+                }
             }
         });
 
