@@ -4,18 +4,18 @@ package com.itonlab.kitcher.model;
  * คลาสสำหรับใช้เป็น model แสดงข้อมูลในหน้า Order Detail (หน้าแสดง order item ที่ลูกค้าสั่ง)
  */
 public class OrderDetailItem {
-    private int menuId;
+    private String menuCode;
     private String name;
     private double price;
-    private int amount;
+    private int quantity;
     private String option;
 
-    public int getMenuId() {
-        return menuId;
+    public String getMenuCode() {
+        return menuCode;
     }
 
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
+    public void setMenuCode(String menuCode) {
+        this.menuCode = menuCode;
     }
 
     public String getName() {
@@ -34,12 +34,12 @@ public class OrderDetailItem {
         this.price = price;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getOption() {

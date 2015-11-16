@@ -111,7 +111,7 @@ public class JsonFunction {
         try {
             order.setCustomerName(body.getString("name"));
             order.setCustomerIP(message.getFromIP());
-            order.setTotal(body.getInt("total"));
+            order.setTotalQuantity(body.getInt("total_quantity"));
             order.setTotalPrice(body.getDouble("total_price"));
             Date now = new Date();
             order.setOrderTime(now);
@@ -127,8 +127,8 @@ public class JsonFunction {
                 // add all order item after add order is complete.
                 OrderItem orderItem = new OrderItem();
                 orderItem.setOrderID(orderId);
-                orderItem.setMenuID(jsonOrderItem.getInt("menu_id"));
-                orderItem.setAmount(jsonOrderItem.getInt("amount"));
+                orderItem.setMenuCode(jsonOrderItem.getString("menu_code"));
+                orderItem.setQuantity(jsonOrderItem.getInt("quantity"));
                 orderItem.setOption(jsonOrderItem.getString("option"));
                 database.addOrderItem(orderItem);
             }
@@ -142,13 +142,13 @@ public class JsonFunction {
     }
 
     private void acceptSyncDataRequest(Message message) {
-        if (message.getMessageType().equals(Message.Type.SYNC_DATA_MESSAGE)) {
+        /*if (message.getMessageType().equals(Message.Type.SYNC_DATA_MESSAGE)) {
             //read file from storage
 
             //send it to client
-            //final int TCP_PORT = 21111;
-            //SimpleTCPClient.send("data file", message.getFromIP(), TCP_PORT);
-        }
+            final int TCP_PORT = 21111;
+            SimpleTCPClient.send("data file", message.getFromIP(), TCP_PORT);
+        }*/
     }
 
 }

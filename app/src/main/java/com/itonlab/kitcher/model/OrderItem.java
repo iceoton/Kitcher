@@ -5,16 +5,16 @@ import android.content.ContentValues;
 public class OrderItem {
     private int id;
     private int orderID;
-    private int menuID;
-    private int amount;
+    private String menuCode;
+    private int quantity;
     private String option;
     private boolean served = false;
 
     public ContentValues toContentValues(){
         ContentValues values = new ContentValues();
         values.put(OrderItemTable.Columns._ORDER_ID,this.orderID);
-        values.put(OrderItemTable.Columns._MENU_ID, this.menuID);
-        values.put(OrderItemTable.Columns._AMOUNT, this.amount);
+        values.put(OrderItemTable.Columns._MENU_CODE, this.menuCode);
+        values.put(OrderItemTable.Columns._QUANTITY, this.quantity);
         values.put(OrderItemTable.Columns._OPTION, this.option);
         int servedValue = 0;
         if(served){
@@ -41,20 +41,20 @@ public class OrderItem {
         this.orderID = orderID;
     }
 
-    public int getMenuID() {
-        return menuID;
+    public String getMenuCode() {
+        return menuCode;
     }
 
-    public void setMenuID(int menuID) {
-        this.menuID = menuID;
+    public void setMenuCode(String menuCode) {
+        this.menuCode = menuCode;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public boolean isServed() {

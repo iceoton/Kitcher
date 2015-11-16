@@ -44,8 +44,8 @@ public class DatabaseListAdapter extends BaseAdapter{
         }
 
         MenuItem menuItem = menuItems.get(position);
-        TextView tvId = (TextView) convertView.findViewById(R.id.tvId);
-        tvId.setText(String.valueOf(menuItem.getId()));
+        TextView tvCode = (TextView) convertView.findViewById(R.id.tvCode);
+        tvCode.setText(String.valueOf(menuItem.getCode()));
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         tvName.setText(menuItem.getNameThai());
         TextView tvPrice  = (TextView) convertView.findViewById(R.id.tvPrice);

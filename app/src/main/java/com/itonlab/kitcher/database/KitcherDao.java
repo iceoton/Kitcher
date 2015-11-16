@@ -77,6 +77,21 @@ public class KitcherDao {
         return menuItem;
     }
 
+    public MenuItem getMenuByCode(String menuCode) {
+        MenuItem menuItem = new MenuItem();
+        String sql = "SELECT * FROM menu" +
+                " WHERE menu.code = ?";
+        String[] selectionArgs = {String.valueOf(menuCode)};
+        Cursor cursor = database.rawQuery(sql, selectionArgs);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            menuItem = MenuItem.newInstance(cursor);
+        }
+
+        return menuItem;
+    }
+
     public void addMenu(MenuItem menuItem) {
         ContentValues values = menuItem.toContentValues();
         long insertIndex = database.insert(MenuTable.TABLE_NAME, null, values);
@@ -142,7 +157,7 @@ public class KitcherDao {
 
         int affected = database.update(PictureTable.TABLE_NAME, values, "id=?", whereArgs);
         if (affected == 0) {
-            Log.d(TAG, "[Menu]update menu id " + picture.getId() + " not successful.");
+            Log.d(TAG, "[Menu]update picture id " + picture.getId() + " not successful.");
         }
     }
 
@@ -257,8 +272,8 @@ public class KitcherDao {
 
     public ArrayList<OrderDetailItem> getOrderDetail(int orderId) {
         ArrayList<OrderDetailItem> orderDetailItems = new ArrayList<OrderDetailItem>();
-        String sql = "SELECT menu_id, name_th, price, amount, option" +
-                " FROM order_item INNER JOIN menu ON menu_id = menu.id"
+        String sql = "SELECT menu_code, name_th, price, quantity, option" +
+                " FROM order_item INNER JOIN menu ON menu_code = menu.code"
                 + " WHERE order_id = ?";
         String[] whereArgs = {String.valueOf(orderId)};
         Cursor cursor = database.rawQuery(sql, whereArgs);
@@ -268,10 +283,10 @@ public class KitcherDao {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 orderDetailItem = new OrderDetailItem();
-                orderDetailItem.setMenuId(cursor.getInt(0));
+                orderDetailItem.setMenuCode(cursor.getString(0));
                 orderDetailItem.setName(cursor.getString(1));
                 orderDetailItem.setPrice(cursor.getDouble(2));
-                orderDetailItem.setAmount(cursor.getInt(3));
+                orderDetailItem.setQuantity(cursor.getInt(3));
                 orderDetailItem.setOption(cursor.getString(4));
                 orderDetailItems.add(orderDetailItem);
                 cursor.moveToNext();
@@ -286,14 +301,14 @@ public class KitcherDao {
 
     public MenuItem getPopularFood() {
         MenuItem menuItem = new MenuItem();
-        String sql = "SELECT SUM(amount) AS frequency, menu_id" +
-                " FROM 'order_item' WHERE served=1 GROUP BY menu_id ORDER BY frequency DESC";
+        String sql = "SELECT SUM(quantity) AS frequency, menu_code" +
+                " FROM 'order_item' WHERE served=1 GROUP BY menu_code ORDER BY frequency DESC";
         Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            int popMenuId = cursor.getInt(1); // get menu_id
-            menuItem = getMenuAtId(popMenuId);
+            String popMenuCode = cursor.getString(1); // get menu_code
+            menuItem = getMenuByCode(popMenuCode);
         }
         cursor.close();
 

@@ -68,7 +68,7 @@ public class OrderDetailActivity extends Activity {
     private double findTotalPrice() {
         double totalPrice = 0;
         for (OrderDetailItem orderDetailItem : orderDetailItems) {
-            totalPrice += (orderDetailItem.getPrice() * orderDetailItem.getAmount());
+            totalPrice += (orderDetailItem.getPrice() * orderDetailItem.getQuantity());
         }
 
         return totalPrice;

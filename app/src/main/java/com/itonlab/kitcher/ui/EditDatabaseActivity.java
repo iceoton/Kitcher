@@ -31,7 +31,7 @@ public class EditDatabaseActivity extends Activity {
     private KitcherDao databaseDao;
     private MenuItem menuItem;
     private ImageView imageViewFood;
-    private EditText etName, etPrice;
+    private EditText etCode, etName, etPrice;
     private Button btnSave;
     private Picture pictureFood;
 
@@ -44,6 +44,7 @@ public class EditDatabaseActivity extends Activity {
         databaseDao.open();
 
         imageViewFood = (ImageView) findViewById(R.id.ivImgFood);
+        etCode = (EditText) findViewById(R.id.etCode);
         etName = (EditText) findViewById(R.id.etName);
         etPrice = (EditText) findViewById(R.id.etPrice);
         btnSave = (Button) findViewById(R.id.btnSave);
@@ -59,6 +60,7 @@ public class EditDatabaseActivity extends Activity {
                 }
             });
 
+            etCode.setText(menuItem.getCode());
             etName.setText(menuItem.getNameThai());
             etPrice.setText(String.valueOf(menuItem.getPrice()));
             pictureFood = databaseDao.getMenuPicture(menuItem.getPictureId());
@@ -120,8 +122,10 @@ public class EditDatabaseActivity extends Activity {
     }
 
     private void saveToDatabase() {
+        String menuCode = etCode.getText().toString().trim();
         String menuName = etName.getText().toString().trim();
         double price = Double.parseDouble(etPrice.getText().toString().trim());
+        menuItem.setCode(menuCode);
         menuItem.setNameThai(menuName);
         menuItem.setPrice(price);
         updateMenuPicture();
@@ -130,9 +134,11 @@ public class EditDatabaseActivity extends Activity {
     }
 
     private void addDataToDatabase() {
+        String menuCode = etCode.getText().toString().trim();
         String menuName = etName.getText().toString().trim();
         double price = Double.parseDouble(etPrice.getText().toString().trim());
         if (!menuName.equals("")) {
+            menuItem.setCode(menuCode);
             menuItem.setNameThai(menuName);
             menuItem.setPrice(price);
             menuItem.setPictureId(addMenuPicture());

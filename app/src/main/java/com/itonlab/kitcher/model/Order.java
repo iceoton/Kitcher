@@ -13,7 +13,7 @@ public class Order {
     private String code;
     private String customerName;
     private String customerIP;
-    private int total;
+    private int totalQuantity;
     private double totalPrice;
     private Date orderTime;
     private boolean served = false;
@@ -30,7 +30,7 @@ public class Order {
         this.code = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CODE));
         this.customerName = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CUSTOMER_NAME));
         this.customerIP = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._CUSTOMER_IP));
-        this.total = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL));
+        this.totalQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL_QUANTITY));
         this.totalPrice = cursor.getDouble(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL_PRICE));
         String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._ORDER_TIME));
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -42,11 +42,7 @@ public class Order {
         }
         int servedValue = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._SERVED));
         // 1 is served and 0 don't serve.
-        if(servedValue == 0){
-            this.served = false;
-        } else {
-            this.served = true;
-        }
+        this.served = servedValue == 1;
 
     }
 
@@ -54,7 +50,7 @@ public class Order {
         ContentValues values = new ContentValues();
         values.put(OrderTable.Columns._CUSTOMER_NAME, this.customerName);
         values.put(OrderTable.Columns._CUSTOMER_IP,this.customerIP);
-        values.put(OrderTable.Columns._TOTAL, this.total);
+        values.put(OrderTable.Columns._TOTAL_QUANTITY, this.totalQuantity);
         values.put(OrderTable.Columns._TOTAL_PRICE, this.totalPrice);
         int servedValue = 0;
         if(served){
@@ -97,12 +93,12 @@ public class Order {
         this.customerIP = customerIP;
     }
 
-    public int getTotal() {
-        return total;
+    public int getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     public double getTotalPrice() {

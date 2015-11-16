@@ -55,7 +55,7 @@ public class HistoryDetailListAdapter extends BaseAdapter {
         tvOrderTime.setText(dateString);
 
         TextView tvNumberOfFood = (TextView)convertView.findViewById(R.id.tvNumberOfFood);
-        tvNumberOfFood.setText(String.valueOf(order.getTotal()));
+        tvNumberOfFood.setText(String.valueOf(order.getTotalQuantity()));
 
         return convertView;
     }
