@@ -76,11 +76,11 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnServed"
+        android:id="@+id/btnPay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_green"
-        android:text="Served"
+        android:text="@string/text_pay_checkout"
         android:textColor="@color/text_color_white"
         android:textSize="24sp"
         android:textStyle="bold" />

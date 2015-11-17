@@ -167,16 +167,58 @@ public class KitcherDao {
         database.delete(PictureTable.TABLE_NAME, whereClause, whereArgs);
     }
 
-    public int addOrder(Order order) {
-        ContentValues values = order.toContentValues();
-        long insertIndex = database.insert(OrderTable.TABLE_NAME, null, values);
-        if (insertIndex == -1) {
-            Log.d(TAG, "An error occurred on inserting order table.");
+    /**
+     * Check an order already exists or not.
+     *
+     * @param order that want to check.
+     * @return if an order already exists return ID of order, Otherwise return -1.
+     */
+    public Order checkOrderAlreadyExist(Order order) {
+        String sql = "SELECT * FROM 'order' WHERE " + OrderTable.Columns._CUSTOMER_IP + "=? AND served=0";
+        String[] selectionArgs = {order.getCustomerIP()};
+        Cursor cursor = database.rawQuery(sql, selectionArgs);
+
+        Order oldOrder = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            oldOrder = Order.newInstance(cursor);
+        }
+        cursor.close();
+
+        return oldOrder;
+    }
+
+    public Order addOrder(Order order) {
+        Order oldOrder = checkOrderAlreadyExist(order);
+        if (oldOrder != null) {
+            // update order
+            order.setTotalQuantity(order.getTotalQuantity() + oldOrder.getTotalQuantity());
+            order.setTotalPrice(order.getTotalPrice() + oldOrder.getTotalPrice());
+            order.setId(oldOrder.getId());
+            updateOrder(order);
         } else {
-            Log.d(TAG, "insert order successful.");
+            // add new order
+            ContentValues values = order.toContentValues();
+            long insertIndex = database.insert(OrderTable.TABLE_NAME, null, values);
+            if (insertIndex == -1) {
+                Log.d(TAG, "An error occurred on inserting order table.");
+            } else {
+                Log.d(TAG, "insert order successful.");
+                order.setId((int) insertIndex);
+            }
         }
 
-        return (int) insertIndex;
+        return order;
+    }
+
+    public void updateOrder(Order order) {
+        ContentValues values = order.toContentValues();
+        String[] whereArgs = {String.valueOf(order.getId())};
+
+        int affected = database.update(OrderTable.TABLE_NAME, values, "id=?", whereArgs);
+        if (affected == 0) {
+            Log.d(TAG, "[Menu]update order id " + order.getId() + " not successful.");
+        }
     }
 
     public void setOrderServed(int orderId, boolean served) {
@@ -191,6 +233,7 @@ public class KitcherDao {
 
         // update its order item
         database.update(OrderItemTable.TABLE_NAME, values, "order_id=?", whereArgs);
+        // and update that order.
         int affected = database.update(OrderTable.TABLE_NAME, values, "id=?", whereArgs);
         if (affected == 0) {
             Log.d(TAG, "[Order]update served value in order id " + orderId + " not successful.");
@@ -207,25 +250,19 @@ public class KitcherDao {
         }
     }
 
-    public ArrayList<Order> getAllOrder() {
-        ArrayList<Order> orders = new ArrayList<Order>();
-        String sql = "SELECT * FROM 'order'";
-        Cursor cursor = database.rawQuery(sql, null);
+    public Order getOrderAtID(int orderId) {
+        String sql = "SELECT * FROM 'order' WHERE id=?";
+        String[] selectionArgs = {String.valueOf(orderId)};
+        Cursor cursor = database.rawQuery(sql, selectionArgs);
 
+        Order order = null;
         if (cursor.getCount() > 0) {
-            Order order;
             cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                order = Order.newInstance(cursor);
-                orders.add(order);
-                cursor.moveToNext();
-            }
+            order = Order.newInstance(cursor);
         }
         cursor.close();
 
-        Log.d(TAG, "Number of order: " + orders.size());
-
-        return orders;
+        return order;
     }
 
     public ArrayList<Order> getAllOrderServed() {
@@ -320,7 +357,7 @@ public class KitcherDao {
         double income = 0.0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String day = dateFormat.format(date);
-        Log.d(TAG, "Get " + day + " income");
+
         String sql = "SELECT SUM(total_price) as total_price FROM 'order' " +
                 "WHERE order_time like '" + day + "%' AND served=1";
         Cursor cursor = database.rawQuery(sql, null);
@@ -329,6 +366,7 @@ public class KitcherDao {
             income = cursor.getDouble(cursor.getColumnIndexOrThrow("total_price"));
         }
         cursor.close();
+        Log.d(TAG, "Get " + day + " income = " + income);
 
         return income;
     }

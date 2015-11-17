@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import app.akexorcist.simpletcplibrary.TCPUtils;
+
 
 public class JsonFunction {
     private Context mContext;
@@ -119,15 +121,16 @@ public class JsonFunction {
 
             KitcherDao database = new KitcherDao(mContext);
             database.open();
-            int orderId = database.addOrder(order);
-            order.setId(orderId);
+
+            order = database.addOrder(order);
 
             JSONArray jsonArrayOrderItems = body.getJSONArray("order");
             for (int i = 0; i < jsonArrayOrderItems.length(); i++) {
                 JSONObject jsonOrderItem = jsonArrayOrderItems.getJSONObject(i);
                 // add all order item after add order is complete.
                 OrderItem orderItem = new OrderItem();
-                orderItem.setOrderID(orderId);
+                orderItem.setOrderID(order.getId());
+                orderItem.setPreId(jsonOrderItem.getInt("pre_id"));
                 orderItem.setMenuCode(jsonOrderItem.getString("menu_code"));
                 orderItem.setQuantity(jsonOrderItem.getInt("quantity"));
                 orderItem.setOption(jsonOrderItem.getString("option"));
@@ -150,6 +153,22 @@ public class JsonFunction {
             final int TCP_PORT = 21111;
             SimpleTCPClient.send("data file", message.getFromIP(), TCP_PORT);
         }*/
+    }
+
+    public String getJSONPayConfirmMessage() {
+        JSONObject message = new JSONObject();
+        try {
+            message.put("message_type", "pay_confirm_ms");
+            message.put("from_ip", TCPUtils.getIP(mContext));
+            //prepare body for add to message
+            JSONObject messageBody = new JSONObject();
+            // add body to message
+            message.put("body", messageBody);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return message.toString();
     }
 
 }

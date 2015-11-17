@@ -42,15 +42,7 @@ public class OrderFragment extends Fragment {
                 JsonFunction.Message appMessage = JsonFunction.acceptMessage(message);
                 if (appMessage.getMessageType().equals(JsonFunction.Message.Type.ORDER_MESSAGE)) {
                     Order order = jsonFunction.acceptOrderFromClient(appMessage);
-
-                    // put "new order" to ListView
-                    orders.add(0, order);
-                    orderListAdapter.notifyDataSetChanged();
-                    listViewOrder.post(new Runnable() {
-                        public void run() {
-                            listViewOrder.smoothScrollToPosition(0);
-                        }
-                    });
+                    addOrderToListView(order);
                 } else {
                     jsonFunction.decideWhatToDo(appMessage);
                 }
@@ -74,6 +66,24 @@ public class OrderFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void addOrderToListView(Order newOrder) {
+        // check it has already exist or not.
+        for (int index = 0; index < orders.size(); index++) {
+            if (orders.get(index).getId() == newOrder.getId()) {
+                orders.remove(index);
+                break;
+            }
+        }
+        // put "new order" to ListView
+        orders.add(0, newOrder);
+        orderListAdapter.notifyDataSetChanged();
+        listViewOrder.post(new Runnable() {
+            public void run() {
+                listViewOrder.smoothScrollToPosition(0);
+            }
+        });
     }
 
     @Override

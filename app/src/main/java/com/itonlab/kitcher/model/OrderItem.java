@@ -4,6 +4,7 @@ import android.content.ContentValues;
 
 public class OrderItem {
     private int id;
+    private int preId;
     private int orderID;
     private String menuCode;
     private int quantity;
@@ -12,6 +13,7 @@ public class OrderItem {
 
     public ContentValues toContentValues(){
         ContentValues values = new ContentValues();
+        values.put(OrderItemTable.Columns._PRE_ID, this.preId);
         values.put(OrderItemTable.Columns._ORDER_ID,this.orderID);
         values.put(OrderItemTable.Columns._MENU_CODE, this.menuCode);
         values.put(OrderItemTable.Columns._QUANTITY, this.quantity);
@@ -31,6 +33,14 @@ public class OrderItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getPreId() {
+        return preId;
+    }
+
+    public void setPreId(int preId) {
+        this.preId = preId;
     }
 
     public int getOrderID() {

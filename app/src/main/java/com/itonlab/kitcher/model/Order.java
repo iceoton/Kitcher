@@ -2,11 +2,12 @@ package com.itonlab.kitcher.model;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Locale;
 
 public class Order {
     private int id;
@@ -49,10 +50,11 @@ public class Order {
         this.totalQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL_QUANTITY));
         this.totalPrice = cursor.getDouble(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL_PRICE));
         String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._ORDER_TIME));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        
         try {
             this.orderTime = dateFormat.parse(dateTime);
+            Log.d("DEBUG", "Order Date: " + orderTime.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -71,6 +73,9 @@ public class Order {
         values.put(OrderTable.Columns._CUSTOMER_IP,this.customerIP);
         values.put(OrderTable.Columns._TOTAL_QUANTITY, this.totalQuantity);
         values.put(OrderTable.Columns._TOTAL_PRICE, this.totalPrice);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String nowTime = dateFormat.format(new Date());
+        values.put(OrderTable.Columns._ORDER_TIME, nowTime);
         int servedValue = 0;
         if(served){
             servedValue = 1;
