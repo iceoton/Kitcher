@@ -48,7 +48,7 @@ public class OrderFragment extends Fragment {
                     orderListAdapter.notifyDataSetChanged();
                     listViewOrder.post(new Runnable() {
                         public void run() {
-                            listViewOrder.smoothScrollToPosition(listViewOrder.getCount() - 1);
+                            listViewOrder.smoothScrollToPosition(0);
                         }
                     });
                 } else {
