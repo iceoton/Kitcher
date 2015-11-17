@@ -23,7 +23,7 @@ public class HistoryOrderDetailActivity extends Activity {
     private int orderId;
     private String orderTime;
     private KitcherDao databaseDao;
-    private TextView tvOrderId, tvOrderTime, tvTotalPrice;
+    private TextView tvOrderId, tvOrderTime, tvTake, tvTotalPrice;
     private ListView lvOrderItem;
     private OrderDetailListAdapter orderDetailListAdapter;
     private ArrayList<OrderDetailItem> orderDetailItems;
@@ -58,7 +58,10 @@ public class HistoryOrderDetailActivity extends Activity {
         lvOrderItem = (ListView) findViewById(R.id.lvOrderItem);
         lvOrderItem.setAdapter(orderDetailListAdapter);
 
-        tvTotalPrice = (TextView)findViewById(R.id.tvTotalPrice);
+        tvTake = (TextView) findViewById(R.id.textViewTake);
+        tvTake.setText(getIntent().getStringExtra(OrderTable.Columns._TAKE));
+
+        tvTotalPrice = (TextView) findViewById(R.id.tvTotalPrice);
         tvTotalPrice.setText(String.valueOf(findTotalPrice()));
 
     }
@@ -77,9 +80,9 @@ public class HistoryOrderDetailActivity extends Activity {
         databaseDao.close();
     }
 
-    private double findTotalPrice(){
+    private double findTotalPrice() {
         double totalPrice = 0;
-        for(OrderDetailItem orderDetailItem : orderDetailItems){
+        for (OrderDetailItem orderDetailItem : orderDetailItems) {
             totalPrice += (orderDetailItem.getPrice() * orderDetailItem.getQuantity());
         }
 

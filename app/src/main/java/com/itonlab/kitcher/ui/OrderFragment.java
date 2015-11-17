@@ -13,6 +13,7 @@ import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.Order;
+import com.itonlab.kitcher.model.OrderTable;
 import com.itonlab.kitcher.util.JsonFunction;
 
 import java.util.ArrayList;
@@ -63,6 +64,11 @@ public class OrderFragment extends Fragment {
                 Order order = orders.get(position);
                 Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
                 intent.putExtra("ORDER_ID", order.getId());
+                String take = "*" + getActivity().getResources().getString(R.string.text_take_here);
+                if (orders.get(position).getTake().equals(Order.Take.HOME)) {
+                    take = "*" + getActivity().getResources().getString(R.string.text_take_home);
+                }
+                intent.putExtra(OrderTable.Columns._TAKE, take);
                 startActivity(intent);
             }
         });

@@ -18,5 +18,6 @@ public class OrderTable {
         public static final String _TOTAL_PRICE = "total_price";
         public static final String _ORDER_TIME = "order_time";
         public static final String _SERVED = "served";
+        public static final String _TAKE = "take";
     }
 }

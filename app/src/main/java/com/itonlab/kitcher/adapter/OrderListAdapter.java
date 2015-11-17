@@ -50,8 +50,13 @@ public class OrderListAdapter extends BaseAdapter {
         Order order = orderItems.get(position);
         TextView tvCustomerName = (TextView) convertView.findViewById(R.id.tvCustomerName);
         tvCustomerName.setText(order.getCustomerName());
-        TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);
+        if (order.getTake().equals(Order.Take.HOME)) {
+            tvCustomerName.setTextColor(mContext.getResources().getColor(R.color.red));
+        } else {
+            tvCustomerName.setTextColor(mContext.getResources().getColor(R.color.black));
+        }
 
+        TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault());
         String dateString = dateFormat.format(order.getOrderTime());
         tvOrderTime.setText(dateString);

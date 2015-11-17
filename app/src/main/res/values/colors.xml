@@ -31,4 +31,5 @@
     <color name="action_button_drop_shadow">#ffc94727</color>
     <color name="action_button_disabled">#fff79d82</color>
     <color name="golden">#fff9b717</color>
+    <color name="black">#ff000000</color>
 </resources>

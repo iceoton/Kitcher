@@ -17,6 +17,22 @@ public class Order {
     private double totalPrice;
     private Date orderTime;
     private boolean served = false;
+    private Take take = Take.HERE;
+
+    public enum Take {
+        HERE(0),
+        HOME(1);
+
+        private final int value;
+
+        Take(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+    }
 
     public static Order newInstance(Cursor cursor) {
         Order order = new Order();
@@ -44,6 +60,9 @@ public class Order {
         // 1 is served and 0 don't serve.
         this.served = servedValue == 1;
 
+        int takeValue = cursor.getInt(cursor.getColumnIndexOrThrow(OrderTable.Columns._TAKE));
+        setTakeByValue(takeValue);
+
     }
 
     public ContentValues toContentValues(){
@@ -57,6 +76,7 @@ public class Order {
             servedValue = 1;
         }
         values.put(OrderTable.Columns._SERVED, servedValue);
+        values.put(OrderTable.Columns._TAKE, take.getValue());
 
         return values;
     }
@@ -123,5 +143,23 @@ public class Order {
 
     public void setServed(boolean served) {
         this.served = served;
+    }
+
+    public Take getTake() {
+        return take;
+    }
+
+    public void setTake(Take take) {
+        this.take = take;
+    }
+
+    public void setTakeByValue(int takeValue) {
+        switch (takeValue) {
+            case 1:
+                this.take = Take.HOME;
+                break;
+            default:
+                this.take = Take.HERE;
+        }
     }
 }

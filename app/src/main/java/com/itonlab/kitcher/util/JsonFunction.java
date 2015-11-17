@@ -113,6 +113,7 @@ public class JsonFunction {
             order.setCustomerIP(message.getFromIP());
             order.setTotalQuantity(body.getInt("total_quantity"));
             order.setTotalPrice(body.getDouble("total_price"));
+            order.setTakeByValue(body.getInt("take"));
             Date now = new Date();
             order.setOrderTime(now);
 

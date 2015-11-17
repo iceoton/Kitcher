@@ -6,4 +6,6 @@
     <string name="default_ip_address">192.168.1.1</string>
     <string name="text_edit_database">Edit Data</string>
     <string name="text_add">Add</string>
+    <string name="text_take_here">ทานที่ร้าน</string>
+    <string name="text_take_home">สั่งกลับบ้าน</string>
 </resources>

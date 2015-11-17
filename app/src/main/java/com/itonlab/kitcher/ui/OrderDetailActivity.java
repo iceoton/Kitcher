@@ -11,6 +11,7 @@ import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.OrderDetailItem;
+import com.itonlab.kitcher.model.OrderTable;
 import com.itonlab.kitcher.util.JsonFunction;
 
 import java.util.ArrayList;
@@ -40,12 +41,16 @@ public class OrderDetailActivity extends Activity {
         databaseDao.open();
 
         int orderId = getIntent().getIntExtra("ORDER_ID", 0);
+
         orderDetailItems = databaseDao.getOrderDetail(orderId);
         ListView lvBillList = (ListView) findViewById(R.id.lvBillList);
         OrderDetailListAdapter summaryListAdapter = new OrderDetailListAdapter(OrderDetailActivity.this, orderDetailItems);
         lvBillList.setAdapter(summaryListAdapter);
         TextView tvTotalPrice = (TextView) findViewById(R.id.tvTotalPrice);
         tvTotalPrice.setText(String.valueOf(findTotalPrice()));
+
+        TextView tvTake = (TextView) findViewById(R.id.textViewTake);
+        tvTake.setText(getIntent().getStringExtra(OrderTable.Columns._TAKE));
 
         Button btnServed = (Button) findViewById(R.id.btnServed);
         btnServed.setOnClickListener(btnServedOnClickListener);
