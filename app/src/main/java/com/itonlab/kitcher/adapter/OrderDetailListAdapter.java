@@ -40,19 +40,19 @@ public class OrderDetailListAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null){
-            convertView = inflater.inflate(R.layout.bill_list_item, parent, false);
+            convertView = inflater.inflate(R.layout.order_item_list_item, parent, false);
         }
 
         OrderDetailItem orderDetailItem = orderDetailItems.get(position);
         TextView tvName = (TextView)convertView.findViewById(R.id.tvName);
         tvName.setText(orderDetailItem.getName());
         TextView tvNumber = (TextView)convertView.findViewById(R.id.tvNumber);
-        tvNumber.setText(orderDetailItem.getQuantity() + "x");
+        tvNumber.setText(orderDetailItem.getQuantity() + "รายการx");
         TextView tvPrice = (TextView)convertView.findViewById(R.id.tvPrice);
-        tvPrice.setText(Double.toString(orderDetailItem.getPrice()));
+        tvPrice.setText(Double.toString(orderDetailItem.getPrice()) + "บาท");
         TextView tvTotalPrice = (TextView)convertView.findViewById(R.id.tvTotalPrice);
         double totalPrice = orderDetailItem.getPrice() * orderDetailItem.getQuantity();
-        tvTotalPrice.setText(Double.toString(totalPrice));
+        tvTotalPrice.setText(Double.toString(totalPrice) + "บาท");
         TextView tvOption = (TextView) convertView.findViewById(R.id.textViewOption);
         tvOption.setText(orderDetailItem.getOption());
 

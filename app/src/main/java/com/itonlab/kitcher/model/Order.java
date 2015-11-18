@@ -51,7 +51,7 @@ public class Order {
         this.totalPrice = cursor.getDouble(cursor.getColumnIndexOrThrow(OrderTable.Columns._TOTAL_PRICE));
         String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(OrderTable.Columns._ORDER_TIME));
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        
+
         try {
             this.orderTime = dateFormat.parse(dateTime);
             Log.d("DEBUG", "Order Date: " + orderTime.toString());

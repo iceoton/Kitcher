@@ -29,8 +29,8 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="text_bill_list_item" parent="@android:style/TextAppearance.Holo.Widget.TextView">
-        <item name="android:textSize">18sp</item>
+    <style name="text_order_item_list_item" parent="@android:style/TextAppearance.Holo.Widget.TextView">
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

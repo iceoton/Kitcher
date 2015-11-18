@@ -13,30 +13,30 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/text_bill_list_item"
+            style="@style/text_order_item_list_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:singleLine="true"
             android:text="ชื่ออาหาร" />
 
         <TextView
             android:id="@+id/tvNumber"
-            style="@style/text_bill_list_item"
+            style="@style/text_order_item_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:text="2x" />
+            android:text="2รายการx" />
 
         <TextView
             android:id="@+id/tvPrice"
-            style="@style/text_bill_list_item"
+            style="@style/text_order_item_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="40" />
+            android:text="40บาท" />
 
         <TextView
-            style="@style/text_bill_list_item"
+            style="@style/text_order_item_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -45,12 +45,11 @@
 
         <TextView
             android:id="@+id/tvTotalPrice"
-            style="@style/text_bill_list_item"
-            android:layout_width="0dp"
+            style="@style/text_order_item_list_item"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="right"
-            android:text="80.0" />
+            android:text="80.0บาท" />
 
     </LinearLayout>
 
