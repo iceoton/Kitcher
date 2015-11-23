@@ -14,5 +14,6 @@ public class OrderItemTable {
         public static final String _QUANTITY = "quantity";
         public static final String _OPTION = "option";
         public static final String _SERVED = "served";
+        public static final String _STATUS = "status";
     }
 }

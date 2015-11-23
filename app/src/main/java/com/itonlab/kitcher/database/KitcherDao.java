@@ -230,14 +230,37 @@ public class KitcherDao {
         ContentValues values = new ContentValues();
         values.put(OrderTable.Columns._SERVED, servedInteger);
         String[] whereArgs = {String.valueOf(orderId)};
-
-        // update its order item
-        database.update(OrderItemTable.TABLE_NAME, values, "order_id=?", whereArgs);
-        // and update that order.
+        // update that order.
         int affected = database.update(OrderTable.TABLE_NAME, values, "id=?", whereArgs);
+        // and update its order item
+        values.put(OrderItemTable.Columns._STATUS, OrderItem.Status.DONE.getValue());
+        database.update(OrderItemTable.TABLE_NAME, values, "order_id=?", whereArgs);
+
         if (affected == 0) {
             Log.d(TAG, "[Order]update served value in order id " + orderId + " not successful.");
         }
+    }
+
+    public ArrayList<OrderItem> getOrderItem(int orderId) {
+        ArrayList<OrderItem> orderItems = new ArrayList<OrderItem>();
+        String sql = "SELECT * FROM 'order_item' WHERE order_id=?";
+        String[] selectionArgs = {String.valueOf(orderId)};
+        Cursor cursor = database.rawQuery(sql, selectionArgs);
+
+        if (cursor.getCount() > 0) {
+            OrderItem orderItem;
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                orderItem = OrderItem.newInstance(cursor);
+                orderItems.add(orderItem);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        Log.d(TAG, "Number of item in order: " + orderItems.size());
+
+        return orderItems;
     }
 
     public void addOrderItem(OrderItem orderItem) {
@@ -247,6 +270,16 @@ public class KitcherDao {
             Log.d(TAG, "An error occurred on inserting order_item table.");
         } else {
             Log.d(TAG, "insert order_item successful.");
+        }
+    }
+
+    public void updateOrderItemByValue(int orderItemId, ContentValues values) {
+        String[] whereArgs = {String.valueOf(orderItemId)};
+
+        int affected = database.update(OrderItemTable.TABLE_NAME, values, "id=?", whereArgs);
+        if (affected == 0) {
+            Log.d(TAG, "Update order item id " + orderItemId
+                    + " not successful.");
         }
     }
 
@@ -309,7 +342,7 @@ public class KitcherDao {
 
     public ArrayList<OrderDetailItem> getOrderDetail(int orderId) {
         ArrayList<OrderDetailItem> orderDetailItems = new ArrayList<OrderDetailItem>();
-        String sql = "SELECT menu_code, name_th, price, quantity, option" +
+        String sql = "SELECT menu_code, name_th, price, quantity, option, served, status" +
                 " FROM order_item INNER JOIN menu ON menu_code = menu.code"
                 + " WHERE order_id = ?";
         String[] whereArgs = {String.valueOf(orderId)};
@@ -325,6 +358,10 @@ public class KitcherDao {
                 orderDetailItem.setPrice(cursor.getDouble(2));
                 orderDetailItem.setQuantity(cursor.getInt(3));
                 orderDetailItem.setOption(cursor.getString(4));
+                orderDetailItem.setServed(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(OrderItemTable.Columns._SERVED)) == 1);
+                int statusValue = cursor.getInt(cursor.getColumnIndexOrThrow(OrderItemTable.Columns._STATUS));
+                orderDetailItem.setStatus((statusValue == 1 ? OrderItem.Status.DONE : OrderItem.Status.UNDONE));
                 orderDetailItems.add(orderDetailItem);
                 cursor.moveToNext();
             }

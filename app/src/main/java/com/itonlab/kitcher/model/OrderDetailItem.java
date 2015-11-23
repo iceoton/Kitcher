@@ -9,6 +9,8 @@ public class OrderDetailItem {
     private double price;
     private int quantity;
     private String option;
+    private boolean served = false;
+    private OrderItem.Status status = OrderItem.Status.UNDONE;
 
     public String getMenuCode() {
         return menuCode;
@@ -48,5 +50,21 @@ public class OrderDetailItem {
 
     public void setOption(String option) {
         this.option = option;
+    }
+
+    public boolean isServed() {
+        return served;
+    }
+
+    public void setServed(boolean served) {
+        this.served = served;
+    }
+
+    public OrderItem.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderItem.Status status) {
+        this.status = status;
     }
 }

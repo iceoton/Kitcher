@@ -6,6 +6,7 @@ import android.util.Log;
 import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.Order;
 import com.itonlab.kitcher.model.OrderItem;
+import com.itonlab.kitcher.model.OrderItemTable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -162,6 +163,27 @@ public class JsonFunction {
             message.put("from_ip", TCPUtils.getIP(mContext));
             //prepare body for add to message
             JSONObject messageBody = new JSONObject();
+            // add body to message
+            message.put("body", messageBody);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return message.toString();
+    }
+
+    public String getJSONOrderStatusMessage(OrderItem orderItem) {
+        JSONObject message = new JSONObject();
+        try {
+            message.put("message_type", "order_status_ms");
+            message.put("from_ip", TCPUtils.getIP(mContext));
+            //prepare body for add to message
+            JSONObject messageBody = new JSONObject();
+            messageBody.put(OrderItemTable.Columns._PRE_ID, orderItem.getPreId());
+            int servedValue = orderItem.isServed() ? 1 : 0;
+            messageBody.put(OrderItemTable.Columns._SERVED, servedValue);
+            messageBody.put(OrderItemTable.Columns._STATUS, orderItem.getStatus().getValue());
+
             // add body to message
             message.put("body", messageBody);
         } catch (JSONException e) {

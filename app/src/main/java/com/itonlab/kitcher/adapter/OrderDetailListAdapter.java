@@ -1,6 +1,7 @@
 package com.itonlab.kitcher.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.model.OrderDetailItem;
+import com.itonlab.kitcher.model.OrderItem;
 
 import java.util.ArrayList;
 
@@ -41,6 +43,23 @@ public class OrderDetailListAdapter extends BaseAdapter{
         LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null){
             convertView = inflater.inflate(R.layout.order_item_list_item, parent, false);
+        }
+
+        OrderDetailItem orderItemDetail = orderDetailItems.get(position);
+
+        if (orderItemDetail.getStatus().equals(OrderItem.Status.DONE)) {
+            Drawable bgDrawable = mContext.getResources().getDrawable(R.drawable.bg_stroke_yellow);
+
+            if (orderItemDetail.isServed()) {
+                bgDrawable = mContext.getResources().getDrawable(R.drawable.bg_stroke_red);
+                convertView.setEnabled(false);
+            }
+
+            if (android.os.Build.VERSION.SDK_INT >= 16) {
+                convertView.setBackground(bgDrawable);
+            } else {
+                convertView.setBackgroundDrawable(bgDrawable);
+            }
         }
 
         OrderDetailItem orderDetailItem = orderDetailItems.get(position);
