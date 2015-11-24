@@ -9,5 +9,6 @@
     <string name="text_take_here">ทานที่ร้าน</string>
     <string name="text_take_home">สั่งกลับบ้าน</string>
     <string name="text_pay_checkout"><![CDATA[Pay & Checkout]]></string>
-    <string name="send_message_failed">Can\'t send message to customer.</string>
+    <string name="send_message_failed">ไม่สามารถแจ้งไปยังลูกค้าได้ ลองใหม่อีกครั้ง</string>
+    <string name="text_confirm_payment">กรุณายืนยันการชำระเงิน</string>
 </resources>

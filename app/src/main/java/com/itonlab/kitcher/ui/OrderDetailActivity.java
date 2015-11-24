@@ -133,14 +133,8 @@ public class OrderDetailActivity extends Activity {
                 public void onClick(View v) {
                     orderItemDetails.get(position).setStatus(OrderItem.Status.DONE);
                     orderItem.setStatus(OrderItem.Status.DONE);
-                    String json = jsonFunction.getJSONOrderStatusMessage(orderItem);
-                    Log.d("JSON", json);
-                    ContentValues values = new ContentValues();
-                    values.put(OrderItemTable.Columns._STATUS, OrderItem.Status.DONE.getValue());
-                    databaseDao.updateOrderItemByValue(orderItem.getId(), values);
-                    sendUpdateStatus(json);
+                    sendUpdateStatus(position, orderItem);
                     dialogOrderItem.dismiss();
-                    updateListViewOrderItem(position, orderItem);
                 }
             });
 
@@ -152,15 +146,8 @@ public class OrderDetailActivity extends Activity {
                     orderItemDetails.get(position).setServed(true);
                     orderItem.setStatus(OrderItem.Status.DONE);
                     orderItem.setServed(true);
-                    String json = jsonFunction.getJSONOrderStatusMessage(orderItem);
-                    Log.d("JSON", json);
-                    ContentValues values = new ContentValues();
-                    values.put(OrderItemTable.Columns._STATUS, OrderItem.Status.DONE.getValue());
-                    values.put(OrderItemTable.Columns._SERVED, 1);
-                    databaseDao.updateOrderItemByValue(orderItem.getId(), values);
-                    sendUpdateStatus(json);
+                    sendUpdateStatus(position, orderItem);
                     dialogOrderItem.dismiss();
-                    updateListViewOrderItem(position, orderItem);
                 }
             });
 
@@ -189,42 +176,68 @@ public class OrderDetailActivity extends Activity {
     View.OnClickListener btnPayOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // set message to customer
-            String json = jsonFunction.getJSONPayConfirmMessage();
-            Log.d("JSON", json);
-            SimpleTCPClient.send(json, order.getCustomerIP(), TCP_PORT, new SimpleTCPClient.SendCallback() {
-                @Override
-                public void onSuccess(String tag) {
 
-                }
+            AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailActivity.this);
+            builder.setMessage(R.string.text_confirm_payment)
+                    .setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            paymentAndCheckout();
+                        }
+                    })
+                    .setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            // Create the AlertDialog object
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                @Override
-                public void onFailed(String tag) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(OrderDetailActivity.this).create();
-                    alertDialog.setTitle("Alert");
-                    alertDialog.setMessage(getString(R.string.send_message_failed));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                }
-            }, "PAY_CONFIRM");
 
-            // Set order in database is served.
-            int orderId = getIntent().getIntExtra("ORDER_ID", 0);
-            databaseDao.setOrderServed(orderId, true);
-            // Close this activity
-            finish();
         }
     };
 
-    private void sendUpdateStatus(String json) {
+    private void paymentAndCheckout() {
+        // set message to customer
+        String json = jsonFunction.getJSONPayConfirmMessage();
+        Log.d("JSON", json);
         SimpleTCPClient.send(json, order.getCustomerIP(), TCP_PORT, new SimpleTCPClient.SendCallback() {
             @Override
             public void onSuccess(String tag) {
+                // Set order in database is served.
+                int orderId = getIntent().getIntExtra("ORDER_ID", 0);
+                databaseDao.setOrderServed(orderId, true);
+                // Close this activity
+                finish();
+            }
+
+            @Override
+            public void onFailed(String tag) {
+                AlertDialog alertDialog = new AlertDialog.Builder(OrderDetailActivity.this).create();
+                alertDialog.setTitle("Alert");
+                alertDialog.setMessage(getString(R.string.send_message_failed));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        }, "PAY_CONFIRM");
+    }
+
+    private void sendUpdateStatus(final int position, final OrderItem orderItem) {
+        String json = jsonFunction.getJSONOrderStatusMessage(orderItem);
+        Log.d("JSON", json);
+        SimpleTCPClient.send(json, order.getCustomerIP(), TCP_PORT, new SimpleTCPClient.SendCallback() {
+            @Override
+            public void onSuccess(String tag) {
+                ContentValues values = new ContentValues();
+                values.put(OrderItemTable.Columns._STATUS, orderItem.getStatus().getValue());
+                values.put(OrderItemTable.Columns._SERVED, orderItem.isServed() ? 1 : 0);
+                databaseDao.updateOrderItemByValue(orderItem.getId(), values);
+                updateListViewOrderItem(position, orderItem);
 
             }
 
@@ -339,5 +352,4 @@ public class OrderDetailActivity extends Activity {
             }
         });
     }
-
 }
