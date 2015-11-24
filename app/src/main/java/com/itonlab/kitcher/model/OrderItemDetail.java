@@ -3,7 +3,7 @@ package com.itonlab.kitcher.model;
 /**
  * คลาสสำหรับใช้เป็น model แสดงข้อมูลในหน้า Order Detail (หน้าแสดง order item ที่ลูกค้าสั่ง)
  */
-public class OrderDetailItem {
+public class OrderItemDetail {
     private String menuCode;
     private String name;
     private double price;

@@ -11,17 +11,21 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
+import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.Order;
-import com.itonlab.kitcher.model.OrderDetailItem;
 import com.itonlab.kitcher.model.OrderItem;
+import com.itonlab.kitcher.model.OrderItemDetail;
 import com.itonlab.kitcher.model.OrderItemTable;
 import com.itonlab.kitcher.model.OrderTable;
+import com.itonlab.kitcher.model.Picture;
 import com.itonlab.kitcher.util.JsonFunction;
 
 import java.util.ArrayList;
@@ -32,14 +36,14 @@ import app.akexorcist.simpletcplibrary.SimpleTCPServer;
 public class OrderDetailActivity extends Activity {
     public final int TCP_PORT = 21111;
     private SimpleTCPServer server;
-    ArrayList<OrderDetailItem> orderDetailItems;
+    ArrayList<OrderItemDetail> orderItemDetails;
     ArrayList<OrderItem> orderItems;
     OrderDetailListAdapter orderDetailListAdapter;
     private KitcherDao databaseDao;
-    private int orderId;
     private Order order;
     private ListView lvBillList;
     private JsonFunction jsonFunction;
+    private TextView tvTotalPrice;
 
     private void initialVariable() {
         server = new SimpleTCPServer(TCP_PORT);
@@ -56,8 +60,8 @@ public class OrderDetailActivity extends Activity {
 
         jsonFunction = new JsonFunction(OrderDetailActivity.this);
 
-        orderId = getIntent().getIntExtra("ORDER_ID", 0);
-        orderDetailItems = databaseDao.getOrderDetail(orderId);
+        int orderId = getIntent().getIntExtra("ORDER_ID", 0);
+        orderItemDetails = databaseDao.getOrderDetail(orderId);
         orderItems = databaseDao.getOrderItem(orderId);
         order = databaseDao.getOrderAtID(orderId);
 
@@ -71,12 +75,12 @@ public class OrderDetailActivity extends Activity {
         initialVariable();
 
         lvBillList = (ListView) findViewById(R.id.lvBillList);
-        orderDetailListAdapter = new OrderDetailListAdapter(OrderDetailActivity.this, orderDetailItems);
+        orderDetailListAdapter = new OrderDetailListAdapter(OrderDetailActivity.this, orderItemDetails);
         lvBillList.setAdapter(orderDetailListAdapter);
         lvBillList.setOnItemClickListener(onOrderItemClickListener);
 
-        TextView tvTotalPrice = (TextView) findViewById(R.id.tvTotalPrice);
-        tvTotalPrice.setText(String.valueOf(findTotalPrice()));
+        tvTotalPrice = (TextView) findViewById(R.id.tvTotalPrice);
+        tvTotalPrice.setText(String.valueOf(order.getTotalPrice()));
 
         TextView tvTake = (TextView) findViewById(R.id.textViewTake);
         tvTake.setText(getIntent().getStringExtra(OrderTable.Columns._TAKE));
@@ -101,8 +105,8 @@ public class OrderDetailActivity extends Activity {
 
     private double findTotalPrice() {
         double totalPrice = 0;
-        for (OrderDetailItem orderDetailItem : orderDetailItems) {
-            totalPrice += (orderDetailItem.getPrice() * orderDetailItem.getQuantity());
+        for (OrderItemDetail orderItemDetail : orderItemDetails) {
+            totalPrice += (orderItemDetail.getPrice() * orderItemDetail.getQuantity());
         }
 
         return totalPrice;
@@ -127,7 +131,7 @@ public class OrderDetailActivity extends Activity {
             btnDone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orderDetailItems.get(position).setStatus(OrderItem.Status.DONE);
+                    orderItemDetails.get(position).setStatus(OrderItem.Status.DONE);
                     orderItem.setStatus(OrderItem.Status.DONE);
                     String json = jsonFunction.getJSONOrderStatusMessage(orderItem);
                     Log.d("JSON", json);
@@ -144,8 +148,8 @@ public class OrderDetailActivity extends Activity {
             btnServed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orderDetailItems.get(position).setStatus(OrderItem.Status.DONE);
-                    orderDetailItems.get(position).setServed(true);
+                    orderItemDetails.get(position).setStatus(OrderItem.Status.DONE);
+                    orderItemDetails.get(position).setServed(true);
                     orderItem.setStatus(OrderItem.Status.DONE);
                     orderItem.setServed(true);
                     String json = jsonFunction.getJSONOrderStatusMessage(orderItem);
@@ -161,17 +165,24 @@ public class OrderDetailActivity extends Activity {
             });
 
             Button btnEdit = (Button) dialogOrderItem.findViewById(R.id.btnEdit);
+            btnEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialogEditOrderItem(position);
+                    dialogOrderItem.dismiss();
+                }
+            });
         }
     };
 
     private void updateListViewOrderItem(int position, OrderItem orderItem) {
         // Remove from item list. However, it will add back later.
         orderItems.remove(position);
-        OrderDetailItem tmpOrderDetailItem = orderDetailItems.get(position);
-        orderDetailItems.remove(position);
+        OrderItemDetail tmpOrderItemDetail = orderItemDetails.get(position);
+        orderItemDetails.remove(position);
         // Re-add to item list.
-        orderItems.add(orderItem);
-        orderDetailItems.add(position, tmpOrderDetailItem);
+        orderItems.add(position, orderItem);
+        orderItemDetails.add(position, tmpOrderItemDetail);
         orderDetailListAdapter.notifyDataSetChanged();
     }
 
@@ -231,6 +242,102 @@ public class OrderDetailActivity extends Activity {
                 alertDialog.show();
             }
         }, "UPDATE_ORDER");
+    }
+
+    private void showDialogEditOrderItem(final int itemPosition) {
+        final OrderItem orderItem = orderItems.get(itemPosition);
+
+        final Dialog dialogEditSummary = new Dialog(OrderDetailActivity.this);
+        dialogEditSummary.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogEditSummary.setCancelable(true);
+        dialogEditSummary.setContentView(R.layout.dialog_edit_order_item);
+        // show detail of food by menu code
+        MenuItem menuItem = databaseDao.getMenuByCode(orderItem.getMenuCode());
+
+        TextView tvName = (TextView) dialogEditSummary.findViewById(R.id.tvName);
+        tvName.setText(menuItem.getNameThai());
+
+        final TextView tvPrice = (TextView) dialogEditSummary.findViewById(R.id.tvPrice);
+        tvPrice.setText(Double.toString(menuItem.getPrice()));
+
+        final EditText etOption = (EditText) dialogEditSummary.findViewById(R.id.editTextOption);
+        etOption.setText(orderItem.getOption());
+
+        ImageView ivImgFood = (ImageView) dialogEditSummary.findViewById(R.id.ivImgFood);
+        Picture picture = databaseDao.getMenuPicture(menuItem.getPictureId());
+        ivImgFood.setImageBitmap(picture.getBitmapPicture());
+
+        dialogEditSummary.show();
+
+        //preparing to find new total quantity
+        order.setTotalQuantity(order.getTotalQuantity() - orderItem.getQuantity());
+
+        final EditText etAmount = (EditText) dialogEditSummary.findViewById(R.id.etAmount);
+        etAmount.setText(String.valueOf(orderItem.getQuantity()));
+        Button btnOK = (Button) dialogEditSummary.findViewById(R.id.btnOK);
+        btnOK.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                int amount = Integer.parseInt(etAmount.getText().toString());
+                String option = etOption.getText().toString();
+                // In case the user entering zero or negative, skip updating.
+                if (amount > 0) {
+                    orderItemDetails.get(itemPosition).setQuantity(amount);
+                    orderItemDetails.get(itemPosition).setOption(option);
+                    orderItem.setQuantity(amount);
+                    orderItem.setOption(option);
+                    // update data in database
+                    final ContentValues values = new ContentValues();
+                    values.put(OrderItemTable.Columns._QUANTITY, amount);
+                    values.put(OrderItemTable.Columns._OPTION, option);
+                    //send message to customer
+                    String json = jsonFunction.getJSONEditOrderMessage(orderItem);
+                    SimpleTCPClient.send(json, order.getCustomerIP(), TCP_PORT, new SimpleTCPClient.SendCallback() {
+                        @Override
+                        public void onSuccess(String tag) {
+                            updateListViewOrderItem(itemPosition, orderItem);
+                            //update data in database
+                            databaseDao.updateOrderItemByValue(orderItem.getId(), values);
+                            // change total quantity and total price of order
+                            ContentValues orderValues = new ContentValues();
+                            int newQuantity = order.getTotalQuantity() + orderItem.getQuantity();
+                            double newPrice = findTotalPrice();
+                            orderValues.put(OrderTable.Columns._TOTAL_QUANTITY, newQuantity);
+                            orderValues.put(OrderTable.Columns._TOTAL_PRICE, newPrice);
+                            databaseDao.updateOrderByValue(order.getId(), orderValues);
+                            // update order object and view
+                            order.setTotalQuantity(newQuantity);
+                            order.setTotalPrice(newPrice);
+                            tvTotalPrice.setText(String.valueOf(newPrice));
+                        }
+
+                        @Override
+                        public void onFailed(String tag) {
+                            AlertDialog alertDialog = new AlertDialog.Builder(OrderDetailActivity.this).create();
+                            alertDialog.setTitle("Alert");
+                            alertDialog.setMessage(getString(R.string.send_message_failed));
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                        }
+                    }, "EDIT_ORDER");
+                }
+
+                dialogEditSummary.dismiss();
+            }
+        });
+
+        dialogEditSummary.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                // do not anything.
+            }
+        });
     }
 
 }

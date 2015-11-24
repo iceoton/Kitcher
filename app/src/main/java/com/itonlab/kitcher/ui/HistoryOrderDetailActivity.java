@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.itonlab.kitcher.R;
 import com.itonlab.kitcher.adapter.OrderDetailListAdapter;
 import com.itonlab.kitcher.database.KitcherDao;
-import com.itonlab.kitcher.model.OrderDetailItem;
+import com.itonlab.kitcher.model.OrderItemDetail;
 import com.itonlab.kitcher.model.OrderTable;
 import com.itonlab.kitcher.util.JsonFunction;
 
@@ -26,7 +26,7 @@ public class HistoryOrderDetailActivity extends Activity {
     private TextView tvOrderId, tvOrderTime, tvTake, tvTotalPrice;
     private ListView lvOrderItem;
     private OrderDetailListAdapter orderDetailListAdapter;
-    private ArrayList<OrderDetailItem> orderDetailItems;
+    private ArrayList<OrderItemDetail> orderItemDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +53,8 @@ public class HistoryOrderDetailActivity extends Activity {
         tvOrderTime = (TextView) findViewById(R.id.tvOrderTime);
         tvOrderTime.setText(orderTime);
 
-        orderDetailItems = databaseDao.getOrderDetail(orderId);
-        orderDetailListAdapter = new OrderDetailListAdapter(HistoryOrderDetailActivity.this, orderDetailItems);
+        orderItemDetails = databaseDao.getOrderDetail(orderId);
+        orderDetailListAdapter = new OrderDetailListAdapter(HistoryOrderDetailActivity.this, orderItemDetails);
         lvOrderItem = (ListView) findViewById(R.id.lvOrderItem);
         lvOrderItem.setAdapter(orderDetailListAdapter);
 
@@ -82,8 +82,8 @@ public class HistoryOrderDetailActivity extends Activity {
 
     private double findTotalPrice() {
         double totalPrice = 0;
-        for (OrderDetailItem orderDetailItem : orderDetailItems) {
-            totalPrice += (orderDetailItem.getPrice() * orderDetailItem.getQuantity());
+        for (OrderItemDetail orderItemDetail : orderItemDetails) {
+            totalPrice += (orderItemDetail.getPrice() * orderItemDetail.getQuantity());
         }
 
         return totalPrice;

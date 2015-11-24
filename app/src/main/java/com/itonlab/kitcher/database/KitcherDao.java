@@ -10,8 +10,8 @@ import android.util.Log;
 import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.model.MenuTable;
 import com.itonlab.kitcher.model.Order;
-import com.itonlab.kitcher.model.OrderDetailItem;
 import com.itonlab.kitcher.model.OrderItem;
+import com.itonlab.kitcher.model.OrderItemDetail;
 import com.itonlab.kitcher.model.OrderItemTable;
 import com.itonlab.kitcher.model.OrderTable;
 import com.itonlab.kitcher.model.Picture;
@@ -221,6 +221,15 @@ public class KitcherDao {
         }
     }
 
+    public void updateOrderByValue(int orderId, ContentValues values) {
+        String[] whereArgs = {String.valueOf(orderId)};
+
+        int affected = database.update(OrderTable.TABLE_NAME, values, "id=?", whereArgs);
+        if (affected == 0) {
+            Log.d(TAG, "[Menu]update order id " + orderId + " not successful.");
+        }
+    }
+
     public void setOrderServed(int orderId, boolean served) {
         // 1 is served and 0 don't serve.
         int servedInteger = 0;
@@ -340,8 +349,8 @@ public class KitcherDao {
         return orders;
     }
 
-    public ArrayList<OrderDetailItem> getOrderDetail(int orderId) {
-        ArrayList<OrderDetailItem> orderDetailItems = new ArrayList<OrderDetailItem>();
+    public ArrayList<OrderItemDetail> getOrderDetail(int orderId) {
+        ArrayList<OrderItemDetail> orderItemDetails = new ArrayList<OrderItemDetail>();
         String sql = "SELECT menu_code, name_th, price, quantity, option, served, status" +
                 " FROM order_item INNER JOIN menu ON menu_code = menu.code"
                 + " WHERE order_id = ?";
@@ -349,28 +358,28 @@ public class KitcherDao {
         Cursor cursor = database.rawQuery(sql, whereArgs);
 
         if (cursor.getCount() > 0) {
-            OrderDetailItem orderDetailItem;
+            OrderItemDetail orderItemDetail;
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                orderDetailItem = new OrderDetailItem();
-                orderDetailItem.setMenuCode(cursor.getString(0));
-                orderDetailItem.setName(cursor.getString(1));
-                orderDetailItem.setPrice(cursor.getDouble(2));
-                orderDetailItem.setQuantity(cursor.getInt(3));
-                orderDetailItem.setOption(cursor.getString(4));
-                orderDetailItem.setServed(
+                orderItemDetail = new OrderItemDetail();
+                orderItemDetail.setMenuCode(cursor.getString(0));
+                orderItemDetail.setName(cursor.getString(1));
+                orderItemDetail.setPrice(cursor.getDouble(2));
+                orderItemDetail.setQuantity(cursor.getInt(3));
+                orderItemDetail.setOption(cursor.getString(4));
+                orderItemDetail.setServed(
                         cursor.getInt(cursor.getColumnIndexOrThrow(OrderItemTable.Columns._SERVED)) == 1);
                 int statusValue = cursor.getInt(cursor.getColumnIndexOrThrow(OrderItemTable.Columns._STATUS));
-                orderDetailItem.setStatus((statusValue == 1 ? OrderItem.Status.DONE : OrderItem.Status.UNDONE));
-                orderDetailItems.add(orderDetailItem);
+                orderItemDetail.setStatus((statusValue == 1 ? OrderItem.Status.DONE : OrderItem.Status.UNDONE));
+                orderItemDetails.add(orderItemDetail);
                 cursor.moveToNext();
             }
         }
         cursor.close();
 
-        Log.d(TAG, "Number of item in order: " + orderDetailItems.size());
+        Log.d(TAG, "Number of item in order: " + orderItemDetails.size());
 
-        return orderDetailItems;
+        return orderItemDetails;
     }
 
     public MenuItem getPopularFood() {

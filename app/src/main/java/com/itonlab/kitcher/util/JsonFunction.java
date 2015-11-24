@@ -193,4 +193,30 @@ public class JsonFunction {
         return message.toString();
     }
 
+    public String getJSONEditOrderMessage(OrderItem orderItem) {
+        JSONObject message = new JSONObject();
+        try {
+            message.put("message_type", "edit_order_ms");
+            message.put("from_ip", TCPUtils.getIP(mContext));
+            //prepare body for add to message
+            JSONObject messageBody = new JSONObject();
+            messageBody.put(OrderItemTable.Columns._PRE_ID, orderItem.getPreId());
+            messageBody.put(OrderItemTable.Columns._QUANTITY, orderItem.getQuantity());
+            messageBody.put(OrderItemTable.Columns._OPTION, orderItem.getOption());
+
+            // add body to message
+            message.put("body", messageBody);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return message.toString();
+    }
+
+    public String getJSONDeleteOrderItem(int preOrderItemId) {
+        JSONObject message = new JSONObject();
+
+        return message.toString();
+    }
+
 }
