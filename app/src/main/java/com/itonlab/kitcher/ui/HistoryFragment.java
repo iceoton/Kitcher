@@ -25,12 +25,10 @@ import com.itonlab.kitcher.database.KitcherDao;
 import com.itonlab.kitcher.model.MenuItem;
 import com.itonlab.kitcher.util.JsonFunction;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import app.akexorcist.simpletcplibrary.SimpleTCPServer;
 
@@ -39,8 +37,8 @@ public class HistoryFragment extends Fragment {
     private SimpleTCPServer server;
     private KitcherDao databaseDao;
 
-    private TextView tvTodayIncome, tvMonthIncome, tvPopFoodName;
-    private BarChart barChartWeek;
+    private TextView tvTodayIncome, tvPopFoodName;
+    private BarChart barChartWeek, barChartMonth;
     private Button btnDetail;
 
     @Override
@@ -60,7 +58,6 @@ public class HistoryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
         tvTodayIncome = (TextView) rootView.findViewById(R.id.tvTodayIncome);
-        tvMonthIncome = (TextView) rootView.findViewById(R.id.tvMonthIncome);
         loadIncome();
         tvPopFoodName = (TextView) rootView.findViewById(R.id.tvFoodName);
         MenuItem popMenuItem = databaseDao.getPopularFood();
@@ -70,12 +67,18 @@ public class HistoryFragment extends Fragment {
         barChartWeek = (BarChart) rootView.findViewById(R.id.chartWeek);
         barChartWeek.setDescription("");
         barChartWeek.setDrawValueAboveBar(true);
-        // ทำให้ขยายยืดหรือหดไม่ได้
-        barChartWeek.setTouchEnabled(false);
-
+        barChartWeek.setTouchEnabled(false); // ทำให้ขยายยืดหรือหดไม่ได้
         barChartWeek.setDrawBarShadow(false);
         barChartWeek.setDrawGridBackground(false);
         loadBarChartWeek();
+
+        barChartMonth = (BarChart) rootView.findViewById(R.id.chartMonth);
+        barChartMonth.setDescription("");
+        barChartMonth.setDrawValueAboveBar(true);
+        barChartMonth.setTouchEnabled(false);
+        barChartMonth.setDrawBarShadow(false);
+        barChartMonth.setDrawGridBackground(false);
+        loadBarChartMonth();
 
         btnDetail = (Button) rootView.findViewById(R.id.btnDetail);
         btnDetail.setOnClickListener(btnDetailListener);
@@ -99,10 +102,9 @@ public class HistoryFragment extends Fragment {
 
     private void loadIncome() {
         double todayIncome = databaseDao.getDayIncome(new Date());
-        double monthIncome = databaseDao.getMonthIncome(new Date());
         tvTodayIncome.setText(String.valueOf(todayIncome) + " บาท");
-        tvMonthIncome.setText(String.valueOf(monthIncome) + " บาท");
     }
+
 
     private void loadBarChartWeek() {
         XAxis xAxis = barChartWeek.getXAxis();
@@ -142,11 +144,12 @@ public class HistoryFragment extends Fragment {
         };
 
         Calendar calendar = new GregorianCalendar();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        // for debugging
+        /*int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         Log.d("DEBUG", "Day of week = " + dayOfWeek);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String day = dateFormat.format(calendar.getTime());
-        Log.d("DEBUG", "Day of week = " + day);
+        Log.d("DEBUG", "Day of week = " + day);*/
 
         ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
         for (int i = 0; i < 7; i++) {
@@ -176,6 +179,65 @@ public class HistoryFragment extends Fragment {
 
         barChartWeek.setData(data);
         barChartWeek.invalidate();
+    }
+
+    private void loadBarChartMonth() {
+        XAxis xAxis = barChartMonth.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setSpaceBetweenLabels(0);
+        xAxis.setDrawGridLines(false);
+
+        YAxis leftAxis = barChartMonth.getAxisLeft();
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setDrawAxisLine(false);
+        leftAxis.setDrawLabels(false);
+
+        YAxis rightAxis = barChartMonth.getAxisRight();
+        rightAxis.setEnabled(false);
+        // add a nice and smooth animation
+        barChartMonth.animateY(2500);
+        barChartMonth.getLegend().setEnabled(false);
+
+        Calendar calendar = new GregorianCalendar();
+        // for debugging
+        /*int monthOfYear= calendar.get(Calendar.MONTH);
+        Log.d("DEBUG", "Month of year = " + monthOfYear);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+        String month = dateFormat.format(calendar.getTime());
+        Log.d("DEBUG", "Month of year = " + month);*/
+
+        ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
+        for (int i = 0; i < 12; i++) {
+            calendar.set(Calendar.MONTH, i);
+            yValues.add(new BarEntry((float) databaseDao.getMonthIncome(calendar.getTime()), i));
+        }
+
+        ArrayList<String> xValues = new ArrayList<String>();
+        xValues.add("ม.ค.");
+        xValues.add("ก.พ.");
+        xValues.add("มี.ค.");
+        xValues.add("เม.ย.");
+        xValues.add("พ.ค.");
+        xValues.add("มิ.ย.");
+        xValues.add("ก.ค.");
+        xValues.add("ส.ค.");
+        xValues.add("ก.ย.");
+        xValues.add("ต.ค.");
+        xValues.add("พ.ย.");
+        xValues.add("ธ.ค.");
+
+        // ชุดข้อมูลที่จะเอาไปแสดงในแกน y
+        BarDataSet barDataSet = new BarDataSet(yValues, "Data Set");
+        barDataSet.setDrawValues(true);
+        barDataSet.setValueFormatter(new MyValueFormatter());
+        // รวมชุดข้อมูลของแกน y ก่อน (สามารถมีข้อมูลหลายชุดได้)
+        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        dataSets.add(barDataSet);
+        // ข้อมูลที่จะเอาไปแสดงทั้งแกน x และ y
+        BarData data = new BarData(xValues, dataSets);
+
+        barChartMonth.setData(data);
+        barChartMonth.invalidate();
     }
 
     View.OnClickListener btnDetailListener = new View.OnClickListener() {

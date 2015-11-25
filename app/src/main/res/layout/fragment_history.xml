@@ -36,34 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/golden"
-        android:orientation="vertical"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="รายได้ทั้งเดือน"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/tvMonthIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="xxx,xxx"
-            android:textColor="@color/text_color_white"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:background="@color/red_orange"
         android:orientation="vertical"
         android:paddingLeft="40dp"
@@ -98,18 +70,49 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/golden"
             android:gravity="center"
+            android:paddingTop="10dp"
             android:text="แนวโน้มสัปดาห์นี้"
             android:textSize="20sp" />
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/chartWeek"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/normal_layout_margin" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dash_line"
+        android:layerType="software" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/golden"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:text="รายได้แต่ละเดือน"
+            android:textSize="20sp" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chartMonth"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/normal_layout_margin" />
