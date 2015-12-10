@@ -1,63 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutOrderItemListItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_stroke_green"
-    android:orientation="vertical"
-    android:padding="@dimen/normal_layout_padding">
+    android:padding="4dp"
+    android:background="@drawable/bg_stroke_green">
+
+    <TextView
+        android:id="@+id/txtItemStatus"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/order_item_status_done" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvName"
-            style="@style/text_order_item_list_item"
-            android:layout_width="0dp"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:text="ชื่ออาหาร" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvName"
+                style="@style/text_order_item_list_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="ชื่ออาหาร" />
+
+            <TextView
+                android:id="@+id/tvNumber"
+                style="@style/text_order_item_list_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="2รายการx" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                style="@style/text_order_item_list_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="40บาท" />
+
+            <TextView
+                style="@style/text_order_item_list_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:text="=" />
+
+            <TextView
+                android:id="@+id/tvTotalPrice"
+                style="@style/text_order_item_list_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="80บาท" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvNumber"
-            style="@style/text_order_item_list_item"
-            android:layout_width="wrap_content"
+            android:id="@+id/textViewOption"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:text="2รายการx" />
-
-        <TextView
-            android:id="@+id/tvPrice"
-            style="@style/text_order_item_list_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="40บาท" />
-
-        <TextView
-            style="@style/text_order_item_list_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:text="=" />
-
-        <TextView
-            android:id="@+id/tvTotalPrice"
-            style="@style/text_order_item_list_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="80.0บาท" />
+            android:text="รสชาติอาหารหรืออื่นๆ" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewOption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="รสชาติอาหารหรืออื่นๆ" />
-
-</LinearLayout>
+</FrameLayout>

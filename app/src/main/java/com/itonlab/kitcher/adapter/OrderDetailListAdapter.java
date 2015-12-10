@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.itonlab.kitcher.R;
@@ -47,18 +48,29 @@ public class OrderDetailListAdapter extends BaseAdapter{
 
         OrderItemDetail orderItemDetail = orderItemDetails.get(position);
 
+        FrameLayout layoutOrderItemListItem = (FrameLayout)
+                convertView.findViewById(R.id.layoutOrderItemListItem);
+        TextView txtOrderItemStatus = (TextView) convertView.findViewById(R.id.txtItemStatus);
+
         if (orderItemDetail.getStatus().equals(OrderItem.Status.DONE)) {
             Drawable bgDrawable = mContext.getResources().getDrawable(R.drawable.bg_stroke_yellow);
+            String strStatus = mContext.getResources().getString(R.string.order_item_status_done);
+            int statusColor = mContext.getResources().getColor(R.color.yellow_shadow);
 
             if (orderItemDetail.isServed()) {
-                bgDrawable = mContext.getResources().getDrawable(R.drawable.bg_stroke_red);
                 convertView.setEnabled(false);
+                bgDrawable = mContext.getResources().getDrawable(R.drawable.bg_stroke_red);
+                strStatus = mContext.getResources().getString(R.string.order_item_status_served);
+                statusColor = mContext.getResources().getColor(R.color.red);
             }
 
+            txtOrderItemStatus.setVisibility(View.VISIBLE);
+            txtOrderItemStatus.setText(strStatus);
+            txtOrderItemStatus.setTextColor(statusColor);
             if (android.os.Build.VERSION.SDK_INT >= 16) {
-                convertView.setBackground(bgDrawable);
+                layoutOrderItemListItem.setBackground(bgDrawable);
             } else {
-                convertView.setBackgroundDrawable(bgDrawable);
+                layoutOrderItemListItem.setBackgroundDrawable(bgDrawable);
             }
         }
 

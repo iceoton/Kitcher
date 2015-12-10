@@ -11,4 +11,6 @@
     <string name="text_pay_checkout"><![CDATA[Pay & Checkout]]></string>
     <string name="send_message_failed">ไม่สามารถแจ้งไปยังลูกค้าได้ ลองใหม่อีกครั้ง</string>
     <string name="text_confirm_payment">กรุณายืนยันการชำระเงิน</string>
+    <string name="order_item_status_done">เสร็จแล้ว</string>
+    <string name="order_item_status_served">เสริฟแล้ว</string>
 </resources>

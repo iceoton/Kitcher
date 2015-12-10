@@ -44,6 +44,7 @@ public class OrderDetailActivity extends Activity {
     private ListView lvBillList;
     private JsonFunction jsonFunction;
     private TextView tvTotalPrice;
+    private int orderId;
 
     private void initialVariable() {
         server = new SimpleTCPServer(TCP_PORT);
@@ -52,7 +53,20 @@ public class OrderDetailActivity extends Activity {
         server.setOnDataReceivedListener(new SimpleTCPServer.OnDataReceivedListener() {
             public void onDataReceived(String message, String ip) {
                 JsonFunction jsonFunction = new JsonFunction(OrderDetailActivity.this);
-                jsonFunction.decideWhatToDo(JsonFunction.acceptMessage(message));
+                JsonFunction.Message jsonMessage = JsonFunction.acceptMessage(message);
+
+                if (jsonMessage.getMessageType().equals(JsonFunction.Message.Type.ORDER_MESSAGE)) {
+                    Order comeOrder = jsonFunction.acceptOrderFromClient(jsonMessage);
+                    if (comeOrder.getId() == orderId) {
+                        // re-load data
+                        orderItemDetails = databaseDao.getOrderDetail(orderId);
+                        orderItems = databaseDao.getOrderItem(orderId);
+                        order = comeOrder;
+                        orderDetailListAdapter = new OrderDetailListAdapter(OrderDetailActivity.this, orderItemDetails);
+                        lvBillList.setAdapter(orderDetailListAdapter);
+                        tvTotalPrice.setText(String.valueOf(order.getTotalPrice()));
+                    }
+                }
             }
         });
         databaseDao = new KitcherDao(OrderDetailActivity.this);
@@ -60,7 +74,7 @@ public class OrderDetailActivity extends Activity {
 
         jsonFunction = new JsonFunction(OrderDetailActivity.this);
 
-        int orderId = getIntent().getIntExtra("ORDER_ID", 0);
+        orderId = getIntent().getIntExtra("ORDER_ID", 0);
         orderItemDetails = databaseDao.getOrderDetail(orderId);
         orderItems = databaseDao.getOrderItem(orderId);
         order = databaseDao.getOrderAtID(orderId);
