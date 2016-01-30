@@ -69,6 +69,7 @@ public class HistoryDetailFragment extends Fragment{
                 Intent intent = new Intent(getActivity(), HistoryOrderDetailActivity.class);
                 intent.putExtra(OrderTable.Columns._ID, orderId);
                 intent.putExtra(OrderTable.Columns._ORDER_TIME, orderTime);
+                intent.putExtra(OrderTable.Columns._CUSTOMER_NAME, orders.get(position).getCustomerName());
                 intent.putExtra(OrderTable.Columns._TAKE, take);
                 getActivity().startActivity(intent);
             }

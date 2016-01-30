@@ -48,10 +48,15 @@ public class HistoryDetailListAdapter extends BaseAdapter {
         Order order = orderItems.get(position);
         TextView tvOrderNumber = (TextView)convertView.findViewById(R.id.tvOrderNumber);
         tvOrderNumber.setText(String.valueOf(position + 1)); // ที่บวก 1 เพราะมันเริ่มนับจาก 0 สะดวกในการมองของผู้ใช้
+        TextView tvCustomerName = (TextView) convertView.findViewById(R.id.tvCustomerName);
+        tvCustomerName.setText(order.getCustomerName());
+        TextView tvTake = (TextView) convertView.findViewById(R.id.textViewTake);
         if (order.getTake().equals(Order.Take.HOME)) {
             tvOrderNumber.setTextColor(mContext.getResources().getColor(R.color.red));
+            tvTake.setText(R.string.text_take_home);
         } else {
             tvOrderNumber.setTextColor(mContext.getResources().getColor(R.color.black));
+            tvTake.setText(R.string.text_take_here);
         }
 
         TextView tvOrderTime = (TextView) convertView.findViewById(R.id.tvOrderTime);

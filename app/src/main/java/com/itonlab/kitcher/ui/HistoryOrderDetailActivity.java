@@ -21,9 +21,9 @@ public class HistoryOrderDetailActivity extends Activity {
     public final int TCP_PORT = 21111;
     private SimpleTCPServer server;
     private int orderId;
-    private String orderTime;
+    private String orderTime, customerName;
     private KitcherDao databaseDao;
-    private TextView tvOrderId, tvOrderTime, tvTake, tvTotalPrice;
+    private TextView tvOrderId, tvOrderTime, tvCustomerName, tvTake, tvTotalPrice;
     private ListView lvOrderItem;
     private OrderDetailListAdapter orderDetailListAdapter;
     private ArrayList<OrderItemDetail> orderItemDetails;
@@ -47,11 +47,15 @@ public class HistoryOrderDetailActivity extends Activity {
 
         orderId = getIntent().getIntExtra(OrderTable.Columns._ID, 0);
         orderTime = getIntent().getStringExtra(OrderTable.Columns._ORDER_TIME);
+        customerName = getIntent().getStringExtra(OrderTable.Columns._CUSTOMER_NAME);
 
         tvOrderId = (TextView) findViewById(R.id.tvOrderNumber);
         tvOrderId.setText(String.valueOf(orderId));
         tvOrderTime = (TextView) findViewById(R.id.tvOrderTime);
         tvOrderTime.setText(orderTime);
+
+        tvCustomerName = (TextView) findViewById(R.id.tvCustomerName);
+        tvCustomerName.setText(customerName);
 
         orderItemDetails = databaseDao.getOrderDetail(orderId);
         orderDetailListAdapter = new OrderDetailListAdapter(HistoryOrderDetailActivity.this, orderItemDetails);
