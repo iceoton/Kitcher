@@ -11,6 +11,45 @@
         android:orientation="vertical"
         android:padding="8dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เริ่ม " />
+
+            <EditText
+                android:id="@+id/etDateStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="01-01-2016"
+                android:inputType="date" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ถึง " />
+
+            <EditText
+                android:id="@+id/etDateEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="31-01-2016"
+                android:inputType="date" />
+
+            <Button
+                android:id="@+id/btnDateFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OK" />
+
+        </LinearLayout>
+
         <include layout="@layout/history_detail_item" />
 
         <View
@@ -26,6 +65,35 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_gray_2"
+        android:gravity="center"
+        android:padding="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="รายได้รวมทั้งหมด "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvTotalIncome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="xx,xxx"
+            android:textSize="16sp"
+            android:textColor="@color/red" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" บาท "
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSummary"

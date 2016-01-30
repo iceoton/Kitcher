@@ -328,6 +328,33 @@ public class KitcherDao {
         return orders;
     }
 
+    public ArrayList<Order> getAllOrderServedByDate(Date start, Date end) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String strStartDate = dateFormat.format(start);
+        String strEndDate = dateFormat.format(end);
+        Log.d(TAG, "Start " + strStartDate + " to " + strEndDate);
+        String sql = "SELECT * FROM 'order' WHERE served=1" +
+                " AND order_time >= '" + strStartDate + "'   AND  order_time <= '" + strEndDate + "%'";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        ArrayList<Order> orders = new ArrayList<Order>();
+        if (cursor.getCount() > 0) {
+            Order order;
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                order = Order.newInstance(cursor);
+                orders.add(order);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        Log.d(TAG, "Number of order: " + orders.size());
+
+        return orders;
+    }
+
+
     public ArrayList<Order> getAllOrderNotServed() {
         ArrayList<Order> orders = new ArrayList<Order>();
         String sql = "SELECT * FROM 'order' WHERE served=0 ORDER BY order_time DESC";
@@ -348,6 +375,7 @@ public class KitcherDao {
 
         return orders;
     }
+
 
     public ArrayList<OrderItemDetail> getOrderDetail(int orderId) {
         ArrayList<OrderItemDetail> orderItemDetails = new ArrayList<OrderItemDetail>();
